@@ -3,6 +3,7 @@ package com.thisisnotyours.registertaxikotlin.module
 import com.thisisnotyours.registertaxikotlin.BuildConfig
 import com.thisisnotyours.registertaxikotlin.Repository.CarInfoRepository
 import com.thisisnotyours.registertaxikotlin.data.CarInfoApiService
+import com.thisisnotyours.registertaxikotlin.module.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,7 +31,9 @@ import javax.inject.Singleton
 object ApiModule {
 
     @Provides
-    fun provideBaseUrl() = Constants.BASE_URL
+    fun provideBaseUrl() = BuildConfig.BASE_URL
+    //또는
+//    fun provideBaseUrl() = Constants.BASE_URL
 
 
     @Singleton

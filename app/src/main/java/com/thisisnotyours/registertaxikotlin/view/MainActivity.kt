@@ -15,7 +15,8 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-//////
+
+
 private val retrofit = Retrofit.Builder()
     .baseUrl("http://49.50.174.192:8080/")
     .addConverterFactory(GsonConverterFactory.create())

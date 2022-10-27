@@ -3,11 +3,9 @@ package com.thisisnotyours.registertaxikotlin.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.thisisnotyours.registertaxikotlin.Repository.CarInfoRepository
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
 
