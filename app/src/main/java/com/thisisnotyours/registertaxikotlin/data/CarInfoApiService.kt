@@ -3,10 +3,7 @@ package com.thisisnotyours.registertaxikotlin.data
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
 import com.thisisnotyours.registertaxikotlin.model.UserInfoResponse
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
-import retrofit2.http.QueryMap
+import retrofit2.http.*
 
 interface CarInfoApiService {
     //login api
@@ -26,6 +23,7 @@ interface CarInfoApiService {
     ): retrofit2.Call<CarInfoResponse>
 
 
+//    @Headers("Content-Type: application/json")
     @GET("get-connection-info")
     suspend fun GetCarInfoSuspend(@Query("car_num") car_num: String
                        , @Query("mdn") mdn: String

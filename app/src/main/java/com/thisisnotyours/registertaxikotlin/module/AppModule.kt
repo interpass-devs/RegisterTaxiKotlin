@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
-// ApiModule 만들어주기
+// Module 만들어주기
 // 여기서 부터 정신을 바짝 차리고 설명을 봐야 한다. 다들 알다시피 Hilt 에는 Module 어노테이션(@Module)이 존재한다. 이 모듈 어노테이션이 존재하는 이유는 다음과 같다.
 //
 // 우리가 의존성을 주입할 때 외부 라이브러리는 Hilt 가 인스턴스를 생성하지 못하는 경우가 있다.
@@ -28,7 +28,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object ApiModule {
+class AppModule {
 
     @Provides
     fun provideBaseUrl() = BuildConfig.BASE_URL
@@ -36,8 +36,8 @@ object ApiModule {
 //    fun provideBaseUrl() = Constants.BASE_URL
 
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideOKHttpClient() = if (BuildConfig.DEBUG) {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -47,33 +47,25 @@ object ApiModule {
             .writeTimeout(120, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
             .build()
-    }else{
-        OkHttpClient.Builder()
-            .connectTimeout(120, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)
-            .writeTimeout(120, TimeUnit.SECONDS)
-            .build()
-    }
+    } else OkHttpClient.Builder()
+        .connectTimeout(120, TimeUnit.SECONDS)
+        .readTimeout(120, TimeUnit.SECONDS)
+        .writeTimeout(120, TimeUnit.SECONDS)
+        .build()
 
-    @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .client(okHttpClient)
-            .baseUrl(provideBaseUrl())
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient, BASE_URL: String): Retrofit =
+        Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
             .build()
-    }
 
-    @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit): CarInfoApiService {
-        return retrofit.create(CarInfoApiService::class.java)
-    }
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): CarInfoApiService =
+        retrofit.create(CarInfoApiService::class.java)
 
-    @Singleton
-    @Provides
-    fun provideMainRepository(apiService: CarInfoApiService) =
-        CarInfoRepository(apiService)
 
 }

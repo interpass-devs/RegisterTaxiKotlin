@@ -14,7 +14,7 @@ class CarInfoRepository @Inject constructor(private val carInfoApiService: CarIn
                                 , et_dtti: String
                                 , offset: String
                                 , limit: String) =
-        withContext(Dispatchers.Main) {
+        withContext(Dispatchers.Default) {
             carInfoApiService.GetCarInfoSuspend(
                 car_num,
                 mdn,

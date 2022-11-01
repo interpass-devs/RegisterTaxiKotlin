@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-//    id("com.google.dagger.hilt.android")
     id 'dagger.hilt.android.plugin'
 }
 
@@ -31,8 +30,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -49,7 +48,6 @@ android {
     }
 }
 
-apply plugin: 'dagger.hilt.android.plugin'
 
 dependencies {
 
@@ -73,15 +71,13 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     implementation 'com.loopj.android:android-async-http:1.4.11'
 
-    implementation "com.google.dagger:hilt-android:2.28-alpha"
-    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
+    //Hilt
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-compiler:2.44"
 
-    //viewModel 관련된 확장 라이브러리
-    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
-    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
-
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    //Hilt lifecycle
+//    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+//    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
