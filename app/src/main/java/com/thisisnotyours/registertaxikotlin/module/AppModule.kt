@@ -3,6 +3,7 @@ package com.thisisnotyours.registertaxikotlin.module
 import com.thisisnotyours.registertaxikotlin.BuildConfig
 import com.thisisnotyours.registertaxikotlin.Repository.CarInfoRepository
 import com.thisisnotyours.registertaxikotlin.data.CarInfoApiService
+import com.thisisnotyours.registertaxikotlin.data.LoginInfoApiService
 import com.thisisnotyours.registertaxikotlin.module.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -67,5 +68,8 @@ class AppModule {
     fun provideApiService(retrofit: Retrofit): CarInfoApiService =
         retrofit.create(CarInfoApiService::class.java)
 
-
+    @Provides
+    @Singleton
+    fun provideLoginApiService(retrofit: Retrofit): LoginInfoApiService =
+        retrofit.create(LoginInfoApiService::class.java)
 }

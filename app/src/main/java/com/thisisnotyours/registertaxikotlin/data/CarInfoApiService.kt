@@ -11,7 +11,7 @@ interface CarInfoApiService {
     fun GetLoginInfo(@Query("id") id: String, @Query("pw") pw: String)
     : retrofit2.Call<UserInfoResponse>
 
-
+    //차량조회 api 1)
     @GET("get-connection-info")
     fun GetCarInfoData(@Query("car_num") car_num: String
                        , @Query("mdn") mdn: String
@@ -23,7 +23,7 @@ interface CarInfoApiService {
     ): retrofit2.Call<CarInfoResponse>
 
 
-//    @Headers("Content-Type: application/json")
+    //차량조회 api 2) suspend function
     @GET("get-connection-info")
     suspend fun GetCarInfoSuspend(@Query("car_num") car_num: String
                        , @Query("mdn") mdn: String
@@ -33,4 +33,12 @@ interface CarInfoApiService {
                        , @Query("offset") offset: String
                        , @Query("limit") limit: String
     ): Response<CarInfoResponse>
+
+
+    //차량조회 건수 api)
+    @GET("get-connection-info-length")
+    fun GetCarInfoCnt(@Query("car_num") car_num: String
+                                     , @Query("mdn") mdn: String
+                                     , @Query("company_name") company_name: String
+    ): retrofit2.Call<String>
 }

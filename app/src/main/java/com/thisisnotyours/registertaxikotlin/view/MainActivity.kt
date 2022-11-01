@@ -46,40 +46,58 @@ class MainActivity : AppCompatActivity() {
 
         carInfoViewModel = ViewModelProvider(this@MainActivity).get(CarInfoViewModel::class.java)
 
-        getLoginData()
+        carInfoListResultData_by_Coroutine()
 
-        getCarInfoListData()
-
-        CarInfoListResultData_by_Coroutine()
+        carInfoListCnt()
 
     }//onCreate..
 
 
-    //로그인 정보) retrofit call - data fetching
-    //비동기방식 아님
-    private fun getLoginData() {
-        Log.d(log+"onResponse_login", "call login api")
 
-        val call = openApiObject.retrofitService.GetLoginInfo("test","test")
 
-        call.enqueue(object : retrofit2.Callback<UserInfoResponse>{
-            override fun onResponse(call: Call<UserInfoResponse>, response: Response<UserInfoResponse>) {
-                Log.d(log+"onResponse_login", response.body().toString())
-                if (response.isSuccessful) {
 
-                    Log.d(log+"onResponse_login", "isSuccessful")
-                }else{
-                    Log.d(log+"onResponse_login", "is not successful")
+    //차량조회 리스트) -방법2
+    //MVVM 패턴 사용하여 비동기방식(코루틴 스레드)으로 데이터 fetching
+    //코루틴 & MVVM 사용하여 데이터 fetch
+    private fun carInfoListResultData_by_Coroutine() {
+        lifecycleScope.launch {
+            carInfoViewModel.getCarInfoList("","","","20221026104924","20221027104924","0","5")
+                .let {
+                    if (!it.isSuccessful) return@let
+
+                    if (it.body() == null) return@let
+
+                    Log.d(log+"coroutine", it.body().toString())
+                    Log.d(log+"coroutine", it.body()?.carInfoVO?.get(0)?.company_name.toString())
+                    Log.d(log+"coroutine", it.body()?.carInfoVO?.get(0)?.car_regnum.toString())
+                    Log.d(log+"coroutine", it.body()?.carInfoVO?.get(0)?.type_name.toString())
+                    Log.d(log+"coroutine", it.body()?.carInfoVO?.get(0)?.car_vin.toString())
+
+                    //데이터 리스트 -> 리사이클러뷰에 표출해야함..
+
                 }
+        }
+    }
+
+
+    //차량조회 리스트 개수)
+    //retrofit call
+    private fun carInfoListCnt() {
+        val call = openApiObject.retrofitService.GetCarInfoCnt("","","")
+        call.enqueue(object : retrofit2.Callback<String>{
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                Log.d(log+"onResponse_str", response.body().toString())
             }
 
-            override fun onFailure(call: Call<UserInfoResponse>, t: Throwable) {
-
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e(log+"onResponse_str", t.message.toString())
             }
+
         })
     }
 
-    //차량조회 리스트) -방법2
+
+    //차량조회 리스트) -방법1
     //MVVM 패턴을 쓰지않고, 비동기 방식말고 직접적으로 retrofit call 로 데이터 fetching
     private fun getCarInfoListData() {
         Log.d(log+"onResponse_list", "getCarInfoListData")
@@ -101,32 +119,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<CarInfoResponse>, t: Throwable) {
-                Log.d(log+"onFailure_list", call.request().toString())
-                Log.d(log+"onFailure_list", t.message.toString())
+                Log.e(log+"onFailure_list", call.request().toString())
+                Log.e(log+"onFailure_list", t.message.toString())
             }
 
         })
-    }
-
-    //차량조회 리스트)
-    //MVVM 패턴 사용하여 비동기방식(코루틴 스레드)으로 데이터 fetching
-    //코루틴 & MVVM 사용하여 데이터 fetch
-    private fun CarInfoListResultData_by_Coroutine() {
-        lifecycleScope.launch {
-            carInfoViewModel.getCarInfoList("","","","20221026104924","20221027104924","0","5")
-                .let {
-                    if (!it.isSuccessful) return@let
-
-                    if (it.body() == null) return@let
-
-                    Log.d(log+"coroutine", it.body().toString())
-                    Log.d(log+"coroutine", it.body()?.carInfoVO?.get(0)?.company_name.toString())
-                    Log.d(log+"coroutine", it.body()?.carInfoVO?.get(0)?.car_regnum.toString())
-                    Log.d(log+"coroutine", it.body()?.carInfoVO?.get(0)?.type_name.toString())
-                    Log.d(log+"coroutine", it.body()?.carInfoVO?.get(0)?.car_vin.toString())
-
-                }
-        }
     }
 
 }
