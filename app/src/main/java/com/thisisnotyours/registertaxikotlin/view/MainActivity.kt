@@ -35,7 +35,7 @@ object openApiObject {
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     val log: String = "log_"
-//    private val carInfoViewModel: CarInfoViewModel? = null
+//    private val carInfoViewModel: CarInfoViewModel? = null  //이거 쓰니까 데이터가 안왔음
 //    val carInfoViewModel: CarInfoViewModel by viewModels()
     private lateinit var carInfoViewModel: CarInfoViewModel
     private var resultData: CarInfoResponse? = null
@@ -55,8 +55,8 @@ class MainActivity : AppCompatActivity() {
     }//onCreate..
 
 
-    //차량조회 리스트
-    //비동기 방식말고 직접적으로 retrofit call 로 데이터 fetching
+    //로그인 정보) retrofit call - data fetching
+    //비동기방식 아님
     private fun getLoginData() {
         Log.d(log+"onResponse_login", "call login api")
 
@@ -79,8 +79,8 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    //차량조회 리스트
-    //MVVM 패턴 사용하여 비동기방식(코루틴 스레드)으로 데이터 fetching
+    //차량조회 리스트) -방법2
+    //MVVM 패턴을 쓰지않고, 비동기 방식말고 직접적으로 retrofit call 로 데이터 fetching
     private fun getCarInfoListData() {
         Log.d(log+"onResponse_list", "getCarInfoListData")
 
@@ -108,6 +108,8 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    //차량조회 리스트)
+    //MVVM 패턴 사용하여 비동기방식(코루틴 스레드)으로 데이터 fetching
     //코루틴 & MVVM 사용하여 데이터 fetch
     private fun CarInfoListResultData_by_Coroutine() {
         lifecycleScope.launch {
