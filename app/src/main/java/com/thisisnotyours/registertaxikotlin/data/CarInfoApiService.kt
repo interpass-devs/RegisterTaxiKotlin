@@ -1,15 +1,10 @@
 package com.thisisnotyours.registertaxikotlin.data
 
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
-import com.thisisnotyours.registertaxikotlin.model.UserInfoResponse
 import retrofit2.Response
 import retrofit2.http.*
 
 interface CarInfoApiService {
-    //login api
-    @POST("mobile_login")
-    fun GetLoginInfo(@Query("id") id: String, @Query("pw") pw: String)
-    : retrofit2.Call<UserInfoResponse>
 
     //차량조회 api 1)
     @GET("get-connection-info")

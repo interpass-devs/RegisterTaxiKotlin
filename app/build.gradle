@@ -88,6 +88,9 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
 
+    //Timber
+    api 'com.jakewharton.timber:timber:5.0.1'
+
 }
 
 // Allow references to generated code

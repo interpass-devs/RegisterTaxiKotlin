@@ -65,11 +65,13 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): CarInfoApiService =
-        retrofit.create(CarInfoApiService::class.java)
+    fun provideLoginApiService(retrofit: Retrofit): LoginInfoApiService =
+        retrofit.create(LoginInfoApiService::class.java)
 
     @Provides
     @Singleton
-    fun provideLoginApiService(retrofit: Retrofit): LoginInfoApiService =
-        retrofit.create(LoginInfoApiService::class.java)
+    fun provideCarInfoApiService(retrofit: Retrofit): CarInfoApiService =
+        retrofit.create(CarInfoApiService::class.java)
+
+
 }

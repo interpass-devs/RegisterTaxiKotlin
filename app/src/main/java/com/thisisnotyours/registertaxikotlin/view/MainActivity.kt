@@ -9,8 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import com.thisisnotyours.registertaxikotlin.R
 import com.thisisnotyours.registertaxikotlin.data.CarInfoApiService
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
-import com.thisisnotyours.registertaxikotlin.model.CarInfoVOS
-import com.thisisnotyours.registertaxikotlin.model.UserInfoResponse
 import com.thisisnotyours.registertaxikotlin.viewModel.CarInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch

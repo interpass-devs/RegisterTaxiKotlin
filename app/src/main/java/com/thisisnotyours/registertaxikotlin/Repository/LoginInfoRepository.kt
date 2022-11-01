@@ -9,7 +9,7 @@ class LoginInfoRepository @Inject constructor(private val loginInfoApiService: L
 
     suspend fun loginInfoData(id: String, pw: String) =
         withContext(Dispatchers.Default) {
-            loginInfoApiService.GetLoginInfo(id, pw)
+            loginInfoApiService.GetLoginInfoSuspned(id, pw)
         }
 
 }
