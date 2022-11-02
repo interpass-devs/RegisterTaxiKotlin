@@ -2,12 +2,16 @@ package com.thisisnotyours.registertaxikotlin.view
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.thisisnotyours.registertaxikotlin.R
 import com.thisisnotyours.registertaxikotlin.data.CarInfoApiService
+import com.thisisnotyours.registertaxikotlin.databinding.ActivityMainBinding
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
 import com.thisisnotyours.registertaxikotlin.viewModel.CarInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,6 +20,7 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 
 
 private val retrofit = Retrofit.Builder()
@@ -31,17 +36,24 @@ object openApiObject {
 
 //@HiltAndroidApp - application 에서만 상용할 수 있음.
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
     val log: String = "log_"
 //    private val carInfoViewModel: CarInfoViewModel? = null  //이거 쓰니까 데이터가 안왔음
 //    val carInfoViewModel: CarInfoViewModel by viewModels()
     private lateinit var carInfoViewModel: CarInfoViewModel
     private var resultData: CarInfoResponse? = null
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
+
+        binding.searchCar.setOnClickListener(this)
+        binding.registerCar.setOnClickListener(this)
+
+        //these needs to be move to fragment
         carInfoViewModel = ViewModelProvider(this@MainActivity).get(CarInfoViewModel::class.java)
 
         carInfoListResultData_by_Coroutine()
@@ -51,7 +63,38 @@ class MainActivity : AppCompatActivity() {
     }//onCreate..
 
 
+    //클릭리스너
+    override fun onClick(p0: View?) {
+        when(p0?.id) {
+            R.id.search_car -> changeFragment(0)
+            R.id.register_car -> changeFragment(1)
+        }
+    }
 
+    //해당 프래그먼트로 이동
+    private fun changeFragment(itemId: Int) {
+        showTimber(itemId.toString())
+        when(itemId) {
+            0 -> {  //차량조회 화면
+                val searchFrag = CarSearchFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .add(R.id.frame_change, searchFrag)
+                    .commit()
+            }
+            1 -> { //차량등록/수정 화면
+                val registerFrag = CarRegistrationFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .add(R.id.frame_change, registerFrag)
+                    .commit()
+            }
+        }
+    }
+
+    private fun showTimber(msg: String) {
+        Timber.d(msg)
+    }
 
 
     //차량조회 리스트) -방법2
@@ -123,6 +166,8 @@ class MainActivity : AppCompatActivity() {
 
         })
     }
+
+
 
 }
 

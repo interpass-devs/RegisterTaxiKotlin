@@ -37,6 +37,7 @@ class LoginActivity : AppCompatActivity() {
 
         loginInfoViewModel = ViewModelProvider(this@LoginActivity).get(LoginInfoViewModel::class.java)
 
+        //로그인버튼 클릭리스너
         binding.btnLogin.setOnClickListener {
             LoginResultData_by_Coroutine()
         }
@@ -66,16 +67,22 @@ class LoginActivity : AppCompatActivity() {
         }
         when(use_yn) {
             "Y" -> {
-                //메인화면으로 이동
+                //메인화면으로 이동  //두번 클릭해야 이동하는 경향이 있음..
                 val i = Intent(this, MainActivity::class.java)
                 startActivity(i)
             }
             "N" -> {
-                Timber.d(log+"n", "error")
+                showTimber("N")   //timber - README 파일참조
                 Toast.makeText(mContext, "로그인 정보가 일치하지 않습니다. 다시 입력해주세요.", Toast.LENGTH_SHORT).show()
             }
             else -> {}
         }//when..
+    }
+
+
+
+    private fun showTimber(msg: String) {
+        Timber.d(msg)
     }
 
 

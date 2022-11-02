@@ -4,12 +4,25 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/btn_cancel_box.xml" value="0.253" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/btn_ok_box.xml" value="0.198" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/btn_reset_box.xml" value="0.251" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/btn_reset_box_clicked.xml" value="0.251" />
         <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/btn_search_box.xml" value="0.2735" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/btn_search_box_clicked.xml" value="0.251" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/cancel_button_click_effect.xml" value="0.251" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/confirm_button_click_effect.xml" value="0.3035" />
         <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/edit_box.xml" value="0.2735" />
         <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/edit_box_selected.xml" value="0.2735" />
         <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/edittext_click_type.xml" value="0.2735" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/ic_arrow_down_24.xml" value="0.251" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.251" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/reset_button_click_effect.xml" value="0.251" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/drawable/search_button_click_effect.xml" value="0.251" />
         <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/layout/activity_login.xml" value="0.275" />
         <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/layout/activity_main.xml" value="0.18697916666666667" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/layout/fragment_car_registration.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/layout/fragment_car_search.xml" value="0.24739583333333334" />
+        <entry key="..\:/Users/Interpass/AndroidStudioProjects/RegisterTaxiKotlin/app/src/main/res/menu/main_menu.xml" value="0.2375" />
       </map>
     </option>
   </component>
