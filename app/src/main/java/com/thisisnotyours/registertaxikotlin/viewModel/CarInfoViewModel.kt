@@ -40,31 +40,6 @@ class CarInfoViewModel @Inject constructor(
         }
     }
 
-//    fun getCarInfoList(
-//        car_num: String,
-//        mdn: String,
-//        company_name: String,
-//        st_dtti: String,
-//        et_dtti: String,
-//        offset: String,
-//        limit: String
-//    ): LiveData<Result<CarInfoResponse>> {
-//
-//        viewModelScope.launch {
-//            _liveData.postValue(Result.loading(null))
-//
-//            carInfoRepository.carInfoListData(car_num, mdn, company_name, st_dtti, et_dtti, offset, limit).let {
-//                if (it.isSuccessful) {
-//                    _liveData.postValue(Result.success(it.body()))
-//                }else{
-//                    _liveData.postValue(Result.error(it.errorBody().toString(), null))
-//                }
-//            }
-//        }
-//        return liveData
-//    }
-
-
 
     suspend fun getCarInfoList(
         car_num: String,
@@ -77,7 +52,6 @@ class CarInfoViewModel @Inject constructor(
     ): Response<CarInfoResponse> {
         return carInfoRepository.carInfoListData(car_num, mdn, company_name, st_dtti, et_dtti, offset, limit)
     }
-
 
 
 

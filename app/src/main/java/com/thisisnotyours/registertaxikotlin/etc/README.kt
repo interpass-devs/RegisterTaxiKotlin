@@ -52,6 +52,7 @@ class README {
 //    CoroutineScope - 필요할때만 열고 완료되면 닫아주는 코루틴 스코프에 사용하기 적합하다.
 //    ViewModelScope - 뷰모델 컴포넌트를 사용한다면, ViewModel 인스턴스에서 사용하기 위해 제공되는 스코프이다.
 //                     GlobalScope와 비슷하게, 뷰모델 인스턴스가 소멸될 때 자동으로 소멸되고 작업도 자연스럽게 취소된다.
+    // lifecycleScope -
 
 
 

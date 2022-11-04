@@ -4,7 +4,6 @@ import com.thisisnotyours.registertaxikotlin.BuildConfig
 import com.thisisnotyours.registertaxikotlin.Repository.CarInfoRepository
 import com.thisisnotyours.registertaxikotlin.data.CarInfoApiService
 import com.thisisnotyours.registertaxikotlin.data.LoginInfoApiService
-import com.thisisnotyours.registertaxikotlin.module.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,7 +33,7 @@ class AppModule {
     @Provides
     fun provideBaseUrl() = BuildConfig.BASE_URL
     //또는
-//    fun provideBaseUrl() = Constants.BASE_URL
+//    fun provideBaseUrl() = Constants.BASE_URL  //constants(object class)
 
 
     @Provides

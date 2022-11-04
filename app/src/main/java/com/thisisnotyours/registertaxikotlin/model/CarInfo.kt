@@ -12,9 +12,29 @@ data class CarInfoResponse (
 
 )
 
+//data class CarInfoVOS (
+//    @SerializedName("company_name") var company_name: String? = null,
+//    @SerializedName("car_regnum") var car_regnum: String? = null,
+//    @SerializedName("type_name") var type_name: String? = null,
+//    @SerializedName("car_vin") var car_vin: String? = null
+//)
+
 data class CarInfoVOS (
     @SerializedName("company_name") var company_name: String? = null,
-    @SerializedName("car_regnum") var car_regnum: String? = null,
     @SerializedName("type_name") var type_name: String? = null,
-    @SerializedName("car_vin") var car_vin: String? = null
-)
+    @SerializedName("mdn") var mdn: String? = null,
+    @SerializedName("car_regnum") var car_regnum: String? = null,
+    @SerializedName("car_vin") var car_vin: String? = null,
+    @SerializedName("car_type") var car_type: String? = null,
+    @SerializedName("car_num") var car_num: String? = null,
+    @SerializedName("driver_id1") var driver_id1: String? = null,
+    @SerializedName("driver_id2") var driver_id2: String? = null,
+    @SerializedName("driver_id3") var driver_id3: String? = null,
+    @SerializedName("fare_name") var fare_name: String? = null,
+    @SerializedName("city_name") var city_name: String? = null,
+    @SerializedName("firmware_id") var firmware_id: String? = null,
+    @SerializedName("speed_factor") var speed_factor: String? = null,
+    @SerializedName("store_id") var store_id: String? = null,
+    @SerializedName("unit_num") var unit_num: String? = null,
+    @SerializedName("unit_sn") var unit_sn: String? = null,
+        )
