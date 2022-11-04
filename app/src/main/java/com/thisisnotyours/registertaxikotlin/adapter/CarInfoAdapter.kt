@@ -2,6 +2,7 @@ package com.thisisnotyours.registertaxikotlin.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.thisisnotyours.registertaxikotlin.R
@@ -23,6 +24,15 @@ class CarInfoAdapter(private val context: Context
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = items[position]
         holder.setData(item, clickCallBack)
+        holder.binding.ivDropDown.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                holder.binding.dropDownLayout.visibility = View.VISIBLE
+                holder.binding.ivDropDown.rotation = 180F
+            }else{
+                holder.binding.dropDownLayout.visibility = View.GONE
+                holder.binding.ivDropDown.rotation = 360F
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -34,7 +44,7 @@ class CarInfoAdapter(private val context: Context
             binding.tvCompanyName.text = carInfo.company_name
             binding.tvMdn.text = carInfo.mdn
             binding.tvCarRegnum.text = carInfo.car_regnum
-            binding.tvCarType.text = carInfo.car_type
+            binding.tvCarType.text = carInfo.type_name
             binding.tvCarNum.text = carInfo.car_num
             binding.tvDriverId.text = carInfo.driver_id1
             binding.tvFareId.text = carInfo.fare_name

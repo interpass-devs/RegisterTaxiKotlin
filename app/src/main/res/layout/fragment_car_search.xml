@@ -92,6 +92,7 @@
                                 android:textColor="@color/red"
                                 android:textSize="18dp"
                                 android:textStyle="bold" />
+
                             <EditText
                                 android:id="@+id/et_company_name"
                                 android:layout_width="match_parent"

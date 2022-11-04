@@ -1,6 +1,8 @@
 package com.thisisnotyours.registertaxikotlin.view
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -22,12 +24,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
 
 
-public val retrofit = Retrofit.Builder()
+val retrofit = Retrofit.Builder()
     .baseUrl("http://49.50.174.192:8080/")
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 
-public object openApiObject {
+object openApiObject {
     val retrofitService: CarInfoApiService by lazy {
         retrofit.create(CarInfoApiService::class.java)
     }
@@ -66,9 +68,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId) {
-            R.id.logout -> {
-                showToast("클릭 로그아웃")
-            }
+            R.id.logout -> {showAlertDialog()}
         }
         return super.onOptionsItemSelected(item)
     }
@@ -80,6 +80,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.search_car -> changeFragment(0)
             R.id.register_car -> changeFragment(1)
         }
+    }
+
+    private fun showAlertDialog() {
+        val dialog: AlertDialog.Builder = AlertDialog.Builder(mContext)
+        dialog.setTitle("로그아웃을 하시겠습니까?")
+            .setNegativeButton("아니오", DialogInterface.OnClickListener { paramDialogInterface, paramInt -> })
+            .setPositiveButton("예", DialogInterface.OnClickListener { paramDialogInterface, paramInt ->
+
+            })
+        dialog.show()
     }
 
     //해당 프래그먼트로 이동
