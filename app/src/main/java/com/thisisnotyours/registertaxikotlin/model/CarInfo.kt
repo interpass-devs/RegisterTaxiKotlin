@@ -12,13 +12,6 @@ data class CarInfoResponse (
 
 )
 
-//data class CarInfoVOS (
-//    @SerializedName("company_name") var company_name: String? = null,
-//    @SerializedName("car_regnum") var car_regnum: String? = null,
-//    @SerializedName("type_name") var type_name: String? = null,
-//    @SerializedName("car_vin") var car_vin: String? = null
-//)
-
 data class CarInfoVOS (
     @SerializedName("company_name") var company_name: String? = null,
     @SerializedName("type_name") var type_name: String? = null,

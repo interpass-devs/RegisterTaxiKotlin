@@ -12,9 +12,9 @@ data class LoginResponse (
         )
 
 data class LoginInfoVO (
-    @SerializedName("id") var id: String? = null,
-    @SerializedName("pw") var pw: String? = null,
-    @SerializedName("name") var name: String? = null,
-    @SerializedName("use_yn") var use_yn: String? = null,
-    @SerializedName("roles") var roles: String? = null
+    var id: String? = null,
+    var pw: String? = null,
+    var name: String? = null,
+    var use_yn: String? = null,
+    var roles: String? = null
 )

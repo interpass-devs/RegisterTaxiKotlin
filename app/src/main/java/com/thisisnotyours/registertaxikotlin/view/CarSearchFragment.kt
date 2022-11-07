@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -37,9 +38,11 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
 //    private val carInfoViewModel: CarInfoViewModel? = null  //이거 쓰니까 데이터가 안왔음
 //    val carInfoViewModel: CarInfoViewModel by viewModels()
     private lateinit var carInfoViewModel: CarInfoViewModel
-    private var resultData: CarInfoResponse? = null
     private lateinit var carInfoAdapter: CarInfoAdapter
     private var carinfoList = mutableListOf<CarInfoVOS>()
+    private var offset: Int = 0
+    private var limit: Int = 10
+    private var totalItemCnt: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +55,6 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCarSearchBinding.inflate(inflater)
-
         showLog("LifeCycle_Search_frag: onCreateView")
 
         mContext = requireActivity()
@@ -60,20 +62,20 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
         //initialize carInfoViewModel
         carInfoViewModel = ViewModelProvider(this).get(CarInfoViewModel::class.java)
 
-        //조회버튼 클릭리스너
+        //initialize CarInfoAdapter
+        carInfoAdapter = CarInfoAdapter(mContext, carinfoList) {
+            //do nothing?
+        }
+
         binding.btnSearch.setOnClickListener(this)
+        binding.btnReset.setOnClickListener(this)
+        binding.btnBack.setOnClickListener(this)
+        binding.btnNext.setOnClickListener(this)
         binding.btnSearch.performClick()
-
-
-//        setCarInfoRecyclerView(mContext)
-
-        //차량조회 정보
-//        carInfoList_by_MVVM()
-
-//        carInfoList_by_Coroutine()
 
         return binding.root
     }
+
 
     //로그대신 timber 라이브러리 사용
     fun showTimber(msg: String) {
@@ -96,8 +98,40 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(p0: View?) {
         when(p0?.id) {
-            R.id.btn_search -> {carInfoListCnt()}  //[조회버튼]: 조회차량 건수출력
+            R.id.btn_search -> {  //[조회]버튼
+                offset = 0;  //초기화
+                carInfoListCnt()  //조회차량 건수출력
+            }
+            R.id.btn_reset -> { //[초기화]버튼
+                carinfoList.clear()
+                binding.carinfoRecyclerview.removeAllViews()
+                carInfoAdapter.notifyDataSetChanged()
+                resetEditTextValue(binding.etCarNum)
+                resetEditTextValue(binding.etCompanyName)
+                resetEditTextValue(binding.etMdn)
+                binding.tvResultCnt.text = "0"
+                binding.btnBack.visibility = View.GONE
+                binding.btnNext.visibility = View.GONE
+                binding.btnEmpty.visibility = View.GONE
+            }
+            R.id.btn_next -> {  //[다음]버튼
+                offset += 10
+                setCarInfoRecyclerView(mContext, offset, limit, totalItemCnt)
+            }
+            R.id.btn_back -> { //[이전]버튼
+                if (offset == 0) {
+                    offset = -10
+                }else if (offset > 0) {
+                    offset -= 10
+                }
+                setCarInfoRecyclerView(mContext, offset, limit, totalItemCnt)
+            }
+
         }
+    }
+
+    private fun resetEditTextValue(et : EditText) {
+        et.setText(null)
     }
 
     //차량조회 리스트 건수 - retrofit call
@@ -112,17 +146,19 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
                 if (!response.body().toString().equals("") || response.body().toString() != null) {
                     showLog("onResponse_str: "+response.body().toString())
                     binding.tvResultCnt.text = response.body().toString()
+                    totalItemCnt = (response.body().toString()).toInt()
 
                     if (response.body().toString().equals("0")) {
                         //검색건수가 없을 때 리사이클러뷰 초기화
                         carinfoList.clear()
                         binding.carinfoRecyclerview.removeAllViews()
                         carInfoAdapter.notifyDataSetChanged()
-                        showLog("건수_0")
                     }else{
-                        showLog("건수_있음")
+                        //검색건수 있을 때 리사이클러뷰 데이터 표출
                         //조회 차량리스트
-                        setCarInfoRecyclerView(mContext)
+                        carinfoList.clear()
+                        carInfoAdapter.notifyDataSetChanged()
+                        setCarInfoRecyclerView(mContext, offset, limit, totalItemCnt)
                     }
                 }
             }
@@ -135,19 +171,11 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
     }
 
     //차량정보 리사이클러뷰 세팅
-    private fun setCarInfoRecyclerView(context: Context) {
-
-        showLog("add_carinfoList_0:  "+carinfoList.toString())
-
+    private fun setCarInfoRecyclerView(context: Context, offset: Int, limit: Int, itemCnt: Int) {
         //조회차량 리스트 데이터 call
-        carInfoList_by_MVVM()
+        carInfoList_by_MVVM(offset, limit, itemCnt)
 
-        //initialize CarInfoAdapter
-        carInfoAdapter = CarInfoAdapter(context, carinfoList) {
-            //do nothing?
-        }
-
-        binding.carinfoRecyclerview.adapter = carInfoAdapter   //lateinit property carInfoAdapter has not been initialized
+        binding.carinfoRecyclerview.adapter = carInfoAdapter   //lateinit property carInfoAdapter has been initialized at onCreate
         binding.carinfoRecyclerview.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
     }
@@ -156,42 +184,57 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
     //차량조회 리스트
     //MVVM 패턴 사용하여 비동기방식(코루틴 스레드)으로 데이터 fetching
     //코루틴 & MVVM 사용하여 데이터 fetch
-    private fun carInfoList_by_MVVM() {
-        lifecycleScope.launch {
-            getYesterdayString()?.let {
-                getCurrentDayString()?.let { it1 ->
-                    carInfoViewModel.getCarInfoList(binding.etCarNum.text.toString()
-                        ,binding.etMdn.text.toString()
-                        ,binding.etCompanyName.text.toString()
-                        ,it   //yesterday
-                        ,it1  //today
-                        ,"0","5")
-                        .let {
-                            if (!it.isSuccessful) return@let
-                            if (it.body() == null) return@let
+    private fun carInfoList_by_MVVM(offset: Int, limit: Int, totalItemCnt: Int) {
+        showLog("itemCnt==> "+totalItemCnt+"개,   offset:"+offset+", limit:"+limit)
 
-                            showLog("DATA-> "+binding.etCarNum.text.toString())
-                            showLog("DATA-> "+binding.etMdn.text.toString())
-                            showLog("DATA-> "+binding.etCompanyName.text.toString())
-                            showLog("DATA-> "+it)
-                            showLog("DATA-> "+it1)
-
+        if (offset == -10) {
+            showToast("처음 페이지입니다")
+        }else if (offset > totalItemCnt) {
+            showToast("마지막 페이지입니다")
+        }else{
+            lifecycleScope.launch {
+                getYesterdayString()?.let {
+                    getCurrentDayString()?.let { it1 ->
+                        carInfoViewModel.getCarInfoList(binding.etCarNum.text.toString()
+                            ,binding.etMdn.text.toString()
+                            ,binding.etCompanyName.text.toString()
+                            ,it   //yesterday
+                            ,it1  //today
+                            ,offset.toString()
+                            ,limit.toString())
+                            .let {
+                                if (!it.isSuccessful) return@let
+                                if (it.body() == null) return@let
+                                showLog("DATA-> "+binding.etCarNum.text.toString())
+                                showLog("DATA-> "+binding.etMdn.text.toString())
+                                showLog("DATA-> "+binding.etCompanyName.text.toString())
+                                showLog("DATA-> "+it)
+                                showLog("DATA-> "+it1)
 //                            showLog(it.body()?.carInfoVO?.get(0)?.company_name.toString())
 
-                            //me: 리스트 사이즈만큼 세팅해야함
-                            //데이터 리스트 -> 리사이클러뷰에 표출
-                            carinfoList.addAll(it.body()?.carInfoVO as MutableList<CarInfoVOS>)  //carInfoItem 해도됨
-                            showLog("DATA_SIZE-> "+carinfoList.size)  //건수
-                            showLog("DATA_RESULT-> "+carinfoList.toString())
+                                //me: 리스트 사이즈만큼 세팅해야함?
+                                //리사이클러뷰 대이터 표출하기 전에 한번 초기화
+                                carinfoList.clear()
 
-                            binding.carinfoRecyclerview.adapter = carInfoAdapter   //lateinit property carInfoAdapter has not been initialized
-                            binding.carinfoRecyclerview.layoutManager =
-                                LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                                binding.btnEmpty.visibility = View.VISIBLE
+                                binding.btnBack.visibility = View.VISIBLE
+                                binding.btnNext.visibility = View.VISIBLE
 
-                            binding.carinfoRecyclerview.post{
-                                carInfoAdapter.notifyDataSetChanged()
+                                //데이터 리스트 -> 리사이클러뷰에 표출
+                                carinfoList.addAll(it.body()?.carInfoVO as MutableList<CarInfoVOS>)  //carInfoItem 해도됨
+                                showLog("DATA_SIZE-> "+carinfoList.size)  //건수
+                                showLog("DATA_RESULT-> "+carinfoList.toString())
+
+                                binding.carinfoRecyclerview.adapter = carInfoAdapter   //lateinit property carInfoAdapter has not been initialized
+                                binding.carinfoRecyclerview.layoutManager =
+                                    LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+
+                                binding.carinfoRecyclerview.post{
+                                    carInfoAdapter.notifyDataSetChanged()
+                                }
+
                             }
-                        }
+                    }
                 }
             }
         }
