@@ -36,4 +36,9 @@ interface CarInfoApiService {
                                      , @Query("mdn") mdn: String
                                      , @Query("company_name") company_name: String
     ): retrofit2.Call<String>
+
+    //차량등록 api)
+    @GET("put-car-info")
+    fun InsertCarInfoData(@QueryMap map: Map<String, String>)
+
 }

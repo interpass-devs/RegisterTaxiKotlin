@@ -82,7 +82,7 @@ class CarInfoAdapter(private val context: Context
             binding.tvDriverId.text = carInfo.driver_id1
             binding.tvFareId.text = carInfo.fare_name
             binding.tvCityId.text = carInfo.city_name
-            binding.tvFirmwareId.text = carInfo.firmware_id
+            binding.tvFirmwareId.text = carInfo.firmware_name
             binding.tvSpeedFactor.text = carInfo.speed_factor
         }
     }

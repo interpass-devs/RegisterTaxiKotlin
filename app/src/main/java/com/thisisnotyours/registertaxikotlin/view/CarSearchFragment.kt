@@ -58,9 +58,7 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
 
         mContext = requireActivity()
 
-        if (arguments != null) {
-            Log.d(log+"frag_type", requireArguments().getString("frag_type").toString())
-        }
+        fragmentType = "search"
 
         //initialize carInfoViewModel
         carInfoViewModel = ViewModelProvider(this).get(CarInfoViewModel::class.java)
@@ -133,6 +131,7 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //editText 값 초기화
     private fun resetEditTextValue(et : EditText) {
         et.setText(null)
     }
@@ -250,12 +249,16 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
                                                 b.putString("company_name", it.body()?.carInfoVO?.get(pos)?.company_name.toString())
                                                 b.putString("car_regnum", it.body()?.carInfoVO?.get(pos)?.car_regnum.toString())
                                                 b.putString("mdn", it.body()?.carInfoVO?.get(pos)?.mdn.toString())
-                                                b.putString("car_type", it.body()?.carInfoVO?.get(pos)?.car_type.toString())
+                                                b.putString("car_type", it.body()?.carInfoVO?.get(pos)?.type_name.toString())
                                                 b.putString("car_vin", it.body()?.carInfoVO?.get(pos)?.car_vin.toString())
                                                 b.putString("car_num", it.body()?.carInfoVO?.get(pos)?.car_num.toString())
                                                 b.putString("driver_id1", it.body()?.carInfoVO?.get(pos)?.driver_id1.toString())
                                                 b.putString("driver_id2", it.body()?.carInfoVO?.get(pos)?.driver_id2.toString())
                                                 b.putString("driver_id3", it.body()?.carInfoVO?.get(pos)?.driver_id3.toString())
+                                                b.putString("fare_id", it.body()?.carInfoVO?.get(pos)?.fare_id.toString())
+                                                b.putString("city_id", it.body()?.carInfoVO?.get(pos)?.city_id.toString())
+                                                b.putString("firmware_id", it.body()?.carInfoVO?.get(pos)?.firmware_id.toString())
+                                                b.putString("speed_factor", it.body()?.carInfoVO?.get(pos)?.speed_factor.toString())
                                                 val frag = CarRegistrationFragment()
                                                 frag.arguments = b
                                                 activity?.supportFragmentManager
@@ -298,27 +301,7 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
                 dialog.show()
             }
             "transfer" -> {  //수정화면으로 이동
-//                val dialog: AlertDialog.Builder = AlertDialog.Builder(mContext)
-//                dialog.setTitle(title+"을 하려면 확인버튼을 눌러주세요")
-//                    .setNegativeButton("취소", DialogInterface.OnClickListener { paramDialogInterface, paramInt -> })
-//                    .setPositiveButton("확인", DialogInterface.OnClickListener { paramDialogInterface, paramInt ->
-//                        val registerFrag = CarRegistrationFragment()
-//                        activity?.supportFragmentManager
-//                            ?.beginTransaction()
-//                            ?.add(R.id.frame_change, registerFrag)
-//                            ?.commit()
-//                        val manager = requireActivity().supportFragmentManager
-//                        //fragment to fragment 데이터 전달
-//                        //fragment to fragment 데이터 전달
-//                        val bundle = Bundle()
-////                                            bundle.putString("login_id", loginId);
-//                        //                                            bundle.putString("login_id", loginId);
-//                        bundle.putString(
-//                            "company_name",
-//                            item.getCarInfoVOS().get(pos).getCompany_name()
-//                        )
-//                    })
-//                dialog.show()
+
             }
         }
     }

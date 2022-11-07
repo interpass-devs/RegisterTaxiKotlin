@@ -34,6 +34,8 @@ object openApiObject {
         retrofit.create(CarInfoApiService::class.java)
     }
 }
+var fragmentType = ""   //프래그먼트 타입/ static 변수
+var carPageType = ""
 
 //@HiltAndroidApp - application 에서만 상용할 수 있음.
 @AndroidEntryPoint
@@ -98,7 +100,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         when(itemId) {
             0 -> {  //차량조회 화면
                 val bundle = Bundle()
-                bundle.putString("frag_type","search")
+                fragmentType = "search"
                 val searchFrag = CarSearchFragment()
                 searchFrag.arguments = bundle
                 supportFragmentManager
@@ -108,7 +110,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             1 -> { //차량등록/수정 화면
                 val bundle = Bundle()
-                bundle.putString("frag_type","register")
+                fragmentType = "register"
                 val registerFrag = CarRegistrationFragment()
                 supportFragmentManager
                     .beginTransaction()
