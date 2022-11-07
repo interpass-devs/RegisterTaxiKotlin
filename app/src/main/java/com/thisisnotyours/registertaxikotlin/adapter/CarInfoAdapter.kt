@@ -3,10 +3,10 @@ package com.thisisnotyours.registertaxikotlin.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.thisisnotyours.registertaxikotlin.R
-import com.thisisnotyours.registertaxikotlin.adapter.CarInfoAdapter.*
+import com.thisisnotyours.registertaxikotlin.adapter.CarInfoAdapter.Holder
 import com.thisisnotyours.registertaxikotlin.databinding.RecyclerCarInfoItemBinding
 import com.thisisnotyours.registertaxikotlin.model.CarInfoVOS
 
@@ -14,6 +14,18 @@ class CarInfoAdapter(private val context: Context
                         , private val items: List<CarInfoVOS>
                         , private val clickCallBack: (carinfoID: String)->Any) :
     RecyclerView.Adapter<Holder>() {
+
+
+    //커스텀 클릭리스너
+    interface mItemLongClickListener {
+        fun onItemLongClick(v: View?, pos: Int)
+    }
+
+    private var mListener: mItemLongClickListener? = null
+
+    fun setMyLongClickListener(mListener: mItemLongClickListener?) {
+        this.mListener = mListener
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -24,6 +36,7 @@ class CarInfoAdapter(private val context: Context
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = items[position]
         holder.setData(item, clickCallBack)
+        //아이템뷰 더보기아이콘 클릭 시
         holder.binding.ivDropDown.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 holder.binding.dropDownLayout.visibility = View.VISIBLE
@@ -33,6 +46,26 @@ class CarInfoAdapter(private val context: Context
                 holder.binding.ivDropDown.rotation = 360F
             }
         }
+
+        holder.binding.root.setOnLongClickListener { view ->
+            if (position != RecyclerView.NO_POSITION) {
+                if (mListener != null) {
+                    mListener!!.onItemLongClick(view, position)
+                }
+            }
+            true
+        }
+
+
+//        itemView.setOnLongClickListener(OnLongClickListener { v ->
+//            val pos: Int = getLayoutPosition()
+//            if (pos != RecyclerView.NO_POSITION) {
+//                if (mListener != null) {
+//                    mListener!!.onItemLongClick(v, pos)
+//                }
+//            }
+//            true
+//        })
     }
 
     override fun getItemCount(): Int {

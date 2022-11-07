@@ -93,17 +93,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     //해당 프래그먼트로 이동
-    private fun changeFragment(itemId: Int) {
+    fun changeFragment(itemId: Int) {
         showTimber(itemId.toString())
         when(itemId) {
             0 -> {  //차량조회 화면
+                val bundle = Bundle()
+                bundle.putString("frag_type","search")
                 val searchFrag = CarSearchFragment()
+                searchFrag.arguments = bundle
                 supportFragmentManager
                     .beginTransaction()
                     .add(R.id.frame_change, searchFrag)
                     .commit()
             }
             1 -> { //차량등록/수정 화면
+                val bundle = Bundle()
+                bundle.putString("frag_type","register")
                 val registerFrag = CarRegistrationFragment()
                 supportFragmentManager
                     .beginTransaction()
