@@ -6,10 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.thisisnotyours.registertaxikotlin.R
 import com.thisisnotyours.registertaxikotlin.databinding.FragmentCarRegistrationBinding
+import com.thisisnotyours.registertaxikotlin.model.CarInfoSpinnerResponse
+import com.thisisnotyours.registertaxikotlin.model.SpinnerVOS
+import com.thisisnotyours.registertaxikotlin.viewModel.CarInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CarRegistrationFragment : Fragment(), View.OnClickListener {
@@ -31,9 +39,21 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
     private var cityId: String = ""
     private var firmwareId: String = ""
     private var speedFactor: String = ""
-    private lateinit var keyMap: HashMap<String, String>
+    private var fareIdIndex: Int = 0
+    private var cityIdIndex: Int = 0
+    private var firmwareIdIndex: Int = 0
+    private var fareIdList = arrayListOf<String>()
+    private var fareIdAdapter: ArrayAdapter<*>? = null  // <*> : star-projections 타입 (README 파일 참조)
+    private var fareIdResult: CarInfoSpinnerResponse? = null
+    private var cityIdList = arrayListOf<String>()
+    private var cityIdAdapter: ArrayAdapter<*>? = null
+    private var vityIdResult: CarInfoSpinnerResponse? = null
+    private var firmwareIdList = arrayListOf<String>()
+    private var firmwareIdAdapter: ArrayAdapter<*>? = null
+    private var firmwareIdResult: CarInfoSpinnerResponse? = null
     private var viewMoreClicked: Boolean = true
-
+    private val keyMap = HashMap<String, String>()
+    private lateinit var carInfoViewModel: CarInfoViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,6 +63,8 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         binding = FragmentCarRegistrationBinding.inflate(inflater)
 
         mContext = requireActivity()
+
+        carInfoViewModel = ViewModelProvider(this).get(CarInfoViewModel::class.java)
 
         binding.btnCarTypePersonal.setOnClickListener(this)
         binding.btnCarTypeCompany.setOnClickListener(this)
@@ -115,6 +137,10 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             binding.btnRegister.text = carPageType+" 완료"
         }
 
+//        getParams()
+        //요금스피너
+        getFareIdSpinnerList(mContext)
+
         return binding.root
     }
 
@@ -155,6 +181,7 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         }
     }
 
+
     fun checkDriverId(driverId: String?, num: Int?) {
         if (driverId != null) {
             if (driverId.contains("#")) {
@@ -171,11 +198,90 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun setMapData() {
+    //요금스피너 리스트 fetching & setting
+    private fun getFareIdSpinnerList(context: Context) {
+        lifecycleScope.launch {
+            carInfoViewModel.getCarInfoFareList()
+                .let {
+                    if (!it.isSuccessful) return@let
+                    if (it.body() == null) return@let
+
+//                    val item: CarInfoSpinnerResponse = it.body()!!
+                    fareIdResult = it.body()!!
+//                    Log.d(log+"item_spinner", item.spinnerVOS?.size.toString()+"개:  "+item.toString())
+
+                    for (i in 0 until fareIdResult!!.spinnerVOS?.size!!) {
+                        //수정값인지 확인
+                        if (!fareId.equals("") || fareId != null) {
+                            Log.d(log+"spinner_fareID", fareId)
+                            if (fareId.equals(fareIdResult!!.spinnerVOS!!.get(i).fare_id)) {
+                                fareIdResult!!.spinnerVOS!!.get(i).fare_id?.let { it1 ->
+                                    Log.d(log+"spinner_value_id",
+                                        it1
+                                    )
+
+                                    fareIdResult!!.spinnerVOS!!.get(i).fare_name?.let { it2 ->
+                                        Log.d(log+"spinner_value_name",
+                                            it2
+                                        )
+                                    }
+                                }
+                                //get the idx of data
+                                fareIdIndex = i
+                            }
+                        }
+//                        fareIdList.add(item.spinnerVOS.get(i).fare_name)
+                        fareIdResult!!.spinnerVOS!!.get(i).fare_name?.let { it1 -> fareIdList.add(it1) }
+                    }
+                }
+
+            //요금 스피너에 데이터 표출
+            fareIdAdapter = ArrayAdapter<Any?>(
+                context,
+                androidx.appcompat.R.layout.select_dialog_item_material,
+                fareIdList as List<String?>
+            )
+            //스피너에 adapter 붙이기
+            binding.spinnerFareId.adapter = fareIdAdapter
+            binding.spinnerFareId.setSelection(fareIdIndex)  //전달받은 수정값(spinner position)이 있으면 세팅/ 기본값은 0 임
+            //스피너아이템 클릭리스너
+            binding.spinnerFareId.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, v: View?, pos: Int, l: Long) {
+                    var selectedFareName = fareIdList.get(pos)
+
+                    for (i in 0 until fareIdResult?.spinnerVOS?.size!!) {
+//                        Log.d(log+"fareIdResult_size", fareIdResult?.spinnerVOS?.size!!.toString())
+                        if (fareIdResult!!.spinnerVOS?.get(i)?.fare_name == selectedFareName) {
+                            fareId = fareIdResult!!.spinnerVOS?.get(i)?.fare_id.toString()   //선택한 아이템 fare_id 저장
+                            fareIdIndex = pos   //선택한 아이템 pos 저장
+//                            Log.d(log+"fareIdResult_name", fareIdResult!!.spinnerVOS?.get(i)?.fare_name+" == "+selectedFareName+"  ,id: "+fareIdResult!!.spinnerVOS?.get(i)?.fare_id)
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+
+            }
+
+        }
+    }
+
+
+    private fun getCityIdSpinnerList() {
+
+    }
+
+
+
+    private fun getParams() {
+        keyMap.put("reg_id", "test")
+        keyMap.put("update_id", "test")
         keyMap.put("company_name", binding.etCompanyName.text.toString())
         keyMap.put("car_regnum", binding.etCarRegnum.text.toString())
         keyMap.put("mdn", binding.etMdn.text.toString())
-//        keyMap.put("car_type", binding.carty)
+        keyMap.put("car_type", carType)
         keyMap.put("car_vin", binding.etCarVin.text.toString())
         keyMap.put("car_num", binding.etCarNum.text.toString())
         keyMap.put("driver_id1", binding.etDriverId1.text.toString())
@@ -197,6 +303,8 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         keyMap.put("daemon_id", "1")
         keyMap.put("firmware_id", firmwareId)
         keyMap.put("speed_factor", binding.etSpeedFactor.text.toString())
+
+        Log.d("final_key_maps", keyMap.toString())
     }
 
 

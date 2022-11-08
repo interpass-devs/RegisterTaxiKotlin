@@ -55,17 +55,6 @@ class CarInfoAdapter(private val context: Context
             }
             true
         }
-
-
-//        itemView.setOnLongClickListener(OnLongClickListener { v ->
-//            val pos: Int = getLayoutPosition()
-//            if (pos != RecyclerView.NO_POSITION) {
-//                if (mListener != null) {
-//                    mListener!!.onItemLongClick(v, pos)
-//                }
-//            }
-//            true
-//        })
     }
 
     override fun getItemCount(): Int {

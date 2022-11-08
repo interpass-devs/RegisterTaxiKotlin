@@ -34,3 +34,19 @@ data class CarInfoVOS (
     @SerializedName("unit_num") var unit_num: String? = null,
     @SerializedName("unit_sn") var unit_sn: String? = null,
         )
+
+
+data class CarInfoSpinnerResponse (
+    @SerializedName("result") var spinnerVOS: List<SpinnerVOS>? = mutableListOf()
+)
+
+data class SpinnerVOS (
+    @SerializedName("fare_id") var fare_id: String? = null,
+    @SerializedName("fare_name") var fare_name: String? = null,
+    @SerializedName("city_id") var city_id: String? = null,
+    @SerializedName("city_name") var city_name: String? = null,
+    @SerializedName("firmware_id") var firmware_id: String? = null,
+    @SerializedName("firmware_name") var firmware_name: String? = null
+)
+
+

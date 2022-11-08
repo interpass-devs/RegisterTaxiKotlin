@@ -26,4 +26,21 @@ class CarInfoRepository @Inject constructor(private val carInfoApiService: CarIn
             )
         }
 
+
+    suspend fun carInfoFareListData() =
+        withContext(Dispatchers.Main) {
+            carInfoApiService.GetFareIdSuspend()
+        }
+
+
+    suspend fun carInfoCityListData() =
+        withContext(Dispatchers.Main) {
+            carInfoApiService.GetCityIdSuspend()
+        }
+
+    suspend fun carInfoFirmwareListData() =
+        withContext(Dispatchers.Main) {
+            carInfoApiService.GetFirmwareIdSuspend()
+        }
+
 }

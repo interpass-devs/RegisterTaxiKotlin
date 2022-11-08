@@ -1,6 +1,7 @@
 package com.thisisnotyours.registertaxikotlin.data
 
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
+import com.thisisnotyours.registertaxikotlin.model.CarInfoSpinnerResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -36,6 +37,19 @@ interface CarInfoApiService {
                                      , @Query("mdn") mdn: String
                                      , @Query("company_name") company_name: String
     ): retrofit2.Call<String>
+
+
+    //요금조회 api
+    @POST("get-fare-type")
+    suspend fun GetFareIdSuspend(): Response<CarInfoSpinnerResponse>
+
+    //시경계조회 api
+    @POST("get-city-type")
+    suspend fun GetCityIdSuspend(): Response<CarInfoSpinnerResponse>
+
+    //벤사조회 api
+    @POST("get-van-type")
+    suspend fun GetFirmwareIdSuspend(): Response<CarInfoSpinnerResponse>
 
     //차량등록 api)
     @GET("put-car-info")

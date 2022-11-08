@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thisisnotyours.registertaxikotlin.Repository.CarInfoRepository
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
+import com.thisisnotyours.registertaxikotlin.model.CarInfoSpinnerResponse
 import com.thisisnotyours.registertaxikotlin.model.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -51,6 +52,19 @@ class CarInfoViewModel @Inject constructor(
         limit: String
     ): Response<CarInfoResponse> {
         return carInfoRepository.carInfoListData(car_num, mdn, company_name, st_dtti, et_dtti, offset, limit)
+    }
+
+
+    suspend fun getCarInfoFareList(): Response<CarInfoSpinnerResponse> {
+        return carInfoRepository.carInfoFareListData()
+    }
+
+    suspend fun getCarInfoCityList(): Response<CarInfoSpinnerResponse> {
+        return carInfoRepository.carInfoCityListData()
+    }
+
+    suspend fun getCarInfoFirmwareList(): Response<CarInfoSpinnerResponse> {
+        return carInfoRepository.carInfoFirmwareListData()
     }
 
 

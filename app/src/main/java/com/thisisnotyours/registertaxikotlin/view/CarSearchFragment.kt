@@ -63,7 +63,7 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
         //initialize carInfoViewModel
         carInfoViewModel = ViewModelProvider(this).get(CarInfoViewModel::class.java)
 
-        //initialize CarInfoAdapter
+        //initialize CarInfoAdapter to set RecyclerView items
         carInfoAdapter = CarInfoAdapter(mContext, carinfoList) {
             //do nothing?
         }
