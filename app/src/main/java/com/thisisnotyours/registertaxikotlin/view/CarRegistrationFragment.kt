@@ -1,6 +1,7 @@
 package com.thisisnotyours.registertaxikotlin.view
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -47,7 +48,7 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
     private var fareIdResult: CarInfoSpinnerResponse? = null
     private var cityIdList = arrayListOf<String>()
     private var cityIdAdapter: ArrayAdapter<*>? = null
-    private var vityIdResult: CarInfoSpinnerResponse? = null
+    private var cityIdResult: CarInfoSpinnerResponse? = null
     private var firmwareIdList = arrayListOf<String>()
     private var firmwareIdAdapter: ArrayAdapter<*>? = null
     private var firmwareIdResult: CarInfoSpinnerResponse? = null
@@ -140,6 +141,8 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
 //        getParams()
         //요금스피너
         getFareIdSpinnerList(mContext)
+        getCityIdSpinnerList(mContext)
+        getFirmwareIdSpinnerList(mContext)
 
         return binding.root
     }
@@ -205,27 +208,13 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                 .let {
                     if (!it.isSuccessful) return@let
                     if (it.body() == null) return@let
-
 //                    val item: CarInfoSpinnerResponse = it.body()!!
                     fareIdResult = it.body()!!
-//                    Log.d(log+"item_spinner", item.spinnerVOS?.size.toString()+"개:  "+item.toString())
 
                     for (i in 0 until fareIdResult!!.spinnerVOS?.size!!) {
                         //수정값인지 확인
                         if (!fareId.equals("") || fareId != null) {
-                            Log.d(log+"spinner_fareID", fareId)
                             if (fareId.equals(fareIdResult!!.spinnerVOS!!.get(i).fare_id)) {
-                                fareIdResult!!.spinnerVOS!!.get(i).fare_id?.let { it1 ->
-                                    Log.d(log+"spinner_value_id",
-                                        it1
-                                    )
-
-                                    fareIdResult!!.spinnerVOS!!.get(i).fare_name?.let { it2 ->
-                                        Log.d(log+"spinner_value_name",
-                                            it2
-                                        )
-                                    }
-                                }
                                 //get the idx of data
                                 fareIdIndex = i
                             }
@@ -250,11 +239,10 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                     var selectedFareName = fareIdList.get(pos)
 
                     for (i in 0 until fareIdResult?.spinnerVOS?.size!!) {
-//                        Log.d(log+"fareIdResult_size", fareIdResult?.spinnerVOS?.size!!.toString())
+
                         if (fareIdResult!!.spinnerVOS?.get(i)?.fare_name == selectedFareName) {
                             fareId = fareIdResult!!.spinnerVOS?.get(i)?.fare_id.toString()   //선택한 아이템 fare_id 저장
                             fareIdIndex = pos   //선택한 아이템 pos 저장
-//                            Log.d(log+"fareIdResult_name", fareIdResult!!.spinnerVOS?.get(i)?.fare_name+" == "+selectedFareName+"  ,id: "+fareIdResult!!.spinnerVOS?.get(i)?.fare_id)
                         }
                     }
                 }
@@ -268,9 +256,106 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    //시경계 스피너
+    private fun getCityIdSpinnerList(context: Context) {
+        lifecycleScope.launch {
+            carInfoViewModel.getCarInfoCityList()
+                .let {
+                    if (!it.isSuccessful) return@let
+                    if (it.body() == null) return@let
+                    cityIdResult = it.body()!!   //결과값
 
-    private fun getCityIdSpinnerList() {
+                    for (i in 0 until cityIdResult!!.spinnerVOS?.size!!) {
+                        //수정값있는지 확인 및 적용
+                        if (!cityId.equals("")) {
+                            if (cityId.equals(cityIdResult!!.spinnerVOS?.get(i)?.city_id)) {
+                                cityIdIndex = i
+                            }
+                        }
+                        //arrayList 에 스피너값 더하기
+                        cityIdResult!!.spinnerVOS?.get(i)?.city_name?.let { it1 -> cityIdList.add(it1) }
+                    }
+                } //let
 
+            //스피너 어뎁터 & 세팅
+            cityIdAdapter = ArrayAdapter(
+                context,
+                androidx.appcompat.R.layout.select_dialog_item_material,
+                cityIdList as List<String?>
+            )
+
+            binding.spinnerCityId.adapter = cityIdAdapter
+            binding.spinnerCityId.setSelection(cityIdIndex)
+            binding.spinnerCityId.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                    var selectedCityName = cityIdList.get(pos)  //선택한 아이템
+
+                    for (i in 0 until cityIdResult?.spinnerVOS?.size!!) {
+                        if (cityIdResult!!.spinnerVOS?.get(i)?.city_name.equals(selectedCityName)) {
+                            cityId = cityIdResult!!.spinnerVOS?.get(i)?.city_id.toString()  //선택한 아이템 fare_id 저장
+                            cityIdIndex = pos  //선택한 아이템 pos 저장
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+
+            }
+        }
+    }
+
+    //펌웨어(벤사)스피너
+    private fun getFirmwareIdSpinnerList(context: Context) {
+        lifecycleScope.launch {
+            carInfoViewModel.getCarInfoFirmwareList()
+                .let {
+                    if (!it.isSuccessful) return@let
+                    if (it.body() == null) return@let
+                    firmwareIdResult = it.body()!!   //결과값
+
+                    for (i in 0 until firmwareIdResult!!.spinnerVOS?.size!!) {
+                        //수정값있는지 확인 및 적용
+                        if (!firmwareId.equals("")) {
+                            Log.d(log+"firmware_id", firmwareId)
+                            if (firmwareId.equals(firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_id)) {
+                                Log.d(log+"firmware_id_check", firmwareId+" == "+firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_id)
+                                Log.d(log+"firmware_name",firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_name.toString())
+                                firmwareIdIndex = i
+                            }
+                        }
+                        //arrayList 에 스피너값 더하기
+                        firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_name?.let { it1 -> firmwareIdList.add(it1) }
+                    }
+                } //let
+
+            //스피너 어뎁터 & 세팅
+            firmwareIdAdapter = ArrayAdapter(
+                context,
+                androidx.appcompat.R.layout.select_dialog_item_material,
+                firmwareIdList as List<String?>
+            )
+
+            binding.spinnerFirmwareId.adapter = firmwareIdAdapter
+            binding.spinnerFirmwareId.setSelection(firmwareIdIndex)
+            binding.spinnerFirmwareId.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, v: View?, pos: Int, p3: Long) {
+                    var selectedFirmwareName = firmwareIdList.get(pos)  //선택한 아이템
+
+                    for (i in 0 until firmwareIdResult?.spinnerVOS?.size!!) {
+                        if (firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_name.equals(selectedFirmwareName)) {
+                            firmwareId = firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_id.toString()  //선택한 아이템 fare_id 저장
+                            firmwareIdIndex = pos  //선택한 아이템 pos 저장
+                        }
+                    }
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+            }
+        }
     }
 
 
