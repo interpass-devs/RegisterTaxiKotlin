@@ -117,19 +117,6 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             cityId = requireArguments().getString("city_id").toString()
             firmwareId = requireArguments().getString("firmware_id").toString()
             speedFactor = requireArguments().getString("speed_factor").toString()
-//            Log.d(log+"companyName", companyName)
-//            Log.d(log+"carRegnum", carRegnum)
-//            Log.d(log+"mdn", mdn)
-//            Log.d(log+"car_type", carType)
-//            Log.d(log+"car_vin", carVin)
-//            Log.d(log+"car_num", carNum)
-//            Log.d(log+"driver_id1", driverId1)
-//            Log.d(log+"driver_id2", driverId2)
-//            Log.d(log+"driver_id3", driverId3)
-//            Log.d(log+"fare_id", fareId)
-//            Log.d(log+"city_id", cityId)
-//            Log.d(log+"firmware_id", firmwareId)
-//            Log.d(log+"speed_factor", speedFactor)
 
             //view 에 값 세팅
             binding.etCompanyName.setText(companyName)
@@ -401,8 +388,8 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         Log.d("key_maps_size", keyMap.size.toString()+"개")
 
         when(carPageType) {
-            "등록" -> {insertData(keyMap)}
-            "수정" -> {updateData(keyMap)}
+            "등록" -> {insertData(keyMap, carPageType)}
+            "수정" -> {updateData(keyMap, carPageType)}
         }
     }
 
@@ -422,20 +409,14 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
     }
 
     //차량등록 insert
-    private fun insertData(datas: HashMap<String, String>) {
+    private fun insertData(datas: HashMap<String, String>, registerType: String) {
         val call = openApiObject.retrofitService.InsertCarData(datas)
         call.enqueue(object : retrofit2.Callback<String>{
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     Log.d("insert_response", response.body().toString())
-                    //없는 입력값 확인
-                    responseResultCheck(response.body().toString())  //insert_response: reg_id,00
-
-                    if (response.body().toString().equals("Y")) {  //등록완료
-                        Log.d("insert_response_Y", response.body().toString())
-                    }else if (response.body().toString().equals("N")) {
-                        Log.d("insert_response_N", response.body().toString())
-                    }
+                    //받아온 결과값 확인
+                    responseResultCheck(response.body().toString(), registerType)
                 }
             }
 
@@ -445,18 +426,13 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         })
     }
 
-    //수정데이터 update
-    private fun updateData(datas: HashMap<String, String>) {
+    //차량등록 update
+    private fun updateData(datas: HashMap<String, String>, registerType: String) {
         val call = openApiObject.retrofitService.UpdateCarData(datas)
         call.enqueue(object : retrofit2.Callback<String>{
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
-                    if (response.body().toString().equals("Y")) {  //수정완료
-                        responseResultCheck(response.body().toString())
-                        Log.d("update_response", response.body().toString())
-                    }else if (response.body().toString().equals("N")) {
-                        Log.d("update_response", response.body().toString())
-                    }
+                    responseResultCheck(response.body().toString(), registerType)
                 }
             }
 
@@ -467,6 +443,7 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         })
     }
 
+    //try mvvm method
     fun updateCarInfoData(datas: HashMap<String, String>) {
         lifecycleScope.launch {
             carInfoViewModel.updateCarData(datas)
@@ -482,67 +459,78 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
     }
 
     //받아온 데이터(response.body) 중 없는게 있는지 확인
-    private fun responseResultCheck(response: String) {
-        var what = ""
-        var msg = " 입력해주세요"
-
-        when(response) {
-            "reg_id,00" -> {
-                what = "로그인 정보가"
-                msg = " 없습니다"
+    private fun responseResultCheck(response: String, what: String) {
+        if (response.equals("Y")) {
+            showToast(what+"이 완료되었습니다.")  //수정 또는 등록완료
+            //조회화면으로 이동
+            val frag = CarSearchFragment()
+            activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.add(R.id.frame_change, frag)
+                ?.commit()
+        }else if (response.equals("N")) {
+            showToast("서버오류")
+        }else{
+            var what = ""
+            var msg = " 입력해주세요"
+            when(response) {
+                "reg_id,00" -> {
+                    what = "로그인 정보가"
+                    msg = " 없습니다"
+                }
+                "update_id,00" -> {
+                    what = "로그인 정보가"
+                    msg = " 없습니다"
+                }
+                "company_name,00" -> {
+                    what = "운수사이름을"
+                }
+                "mdn:01" -> {
+                    what = "입력된 모뎀번호가 이미 존재합니다.\n다른 모뎀번호를"
+                }
+                "mdn,00" -> {
+                    what = "모뎀번호를"
+                }
+                "car_num,00" -> {
+                    what = "차량번호를"
+                }
+                "car_type,00" -> {
+                    what = "차량유형을"
+                }
+                "car_vin,00" -> {
+                    what = "차대번호를"
+                }
+                "driver_id1,00" -> {
+                    what = "운전자 자격번호1를"
+                }
+                "driver_id2,00" -> {
+                    what = "운전자 자격번호2를"
+                }
+                "driver_id3,00" -> {
+                    what = "운전자 자격번호3를"
+                }
+                "car_regnum,00" -> {
+                    what = "사업자번호를"
+                }
+                "fare_id,00" -> {
+                    what = "요금을"
+                    msg = " 선택해주세요"
+                }
+                "city_id,00" -> {
+                    what = "시경계를"
+                    msg = " 선택해주세요"
+                }
+                "daemon_id,00" -> {
+                    what = "daemon_id"
+                    msg = "is empty"
+                }
+                "firmware_id,00" -> {
+                    what = "벤사를"
+                    msg = " 선택해주세요"
+                }
             }
-            "update_id,00" -> {
-                what = "로그인 정보가"
-                msg = " 없습니다"
-            }
-            "company_name,00" -> {
-                what = "운수사이름을"
-            }
-            "mdn:01" -> {
-                what = "입력된 모뎀번호가 이미 존재합니다.\n다른 모뎀번호를"
-            }
-            "mdn,00" -> {
-                what = "모뎀번호를"
-            }
-            "car_num,00" -> {
-                what = "차량번호를"
-            }
-            "car_type,00" -> {
-                what = "차량유형을"
-            }
-            "car_vin,00" -> {
-                what = "차대번호를"
-            }
-            "driver_id1,00" -> {
-                what = "운전자 자격번호1를"
-            }
-            "driver_id2,00" -> {
-                what = "운전자 자격번호2를"
-            }
-            "driver_id3,00" -> {
-                what = "운전자 자격번호3를"
-            }
-            "car_regnum,00" -> {
-                what = "사업자번호를"
-            }
-            "fare_id,00" -> {
-                what = "요금을"
-                msg = " 선택해주세요"
-            }
-            "city_id,00" -> {
-                what = "시경계를"
-                msg = " 선택해주세요"
-            }
-            "daemon_id,00" -> {
-                what = "daemon_id"
-                msg = "is empty"
-            }
-            "firmware_id,00" -> {
-                what = "벤사를"
-                msg = " 선택해주세요"
-            }
+            showToast(what+msg)
         }
-        showToast(what+msg)
     }
 
     fun showToast(msg: String) {
