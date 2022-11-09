@@ -1,8 +1,14 @@
 package com.thisisnotyours.registertaxikotlin.data
 
+import com.google.gson.GsonBuilder
+import com.thisisnotyours.registertaxikotlin.BuildConfig
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
 import com.thisisnotyours.registertaxikotlin.model.CarInfoSpinnerResponse
+import com.thisisnotyours.registertaxikotlin.view.MainActivity
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
 
 interface CarInfoApiService {
@@ -51,8 +57,17 @@ interface CarInfoApiService {
     @POST("get-van-type")
     suspend fun GetFirmwareIdSuspend(): Response<CarInfoSpinnerResponse>
 
-    //차량등록 api)
+    //차량등록 insert api
     @GET("put-car-info")
-    fun InsertCarInfoData(@QueryMap map: Map<String, String>)
+    fun InsertCarData(@QueryMap map: HashMap<String, String>): retrofit2.Call<String>
+
+    //차량등록 업데이트 api)  --> 현재 사용안함
+    @Headers("Content-Type: application/json")
+    @GET("update-car-info")
+    suspend fun UpdateCarInfo(@QueryMap map: HashMap<String, String>): Response<String>
+
+    //차량등록 업데이트 api) --> 현재 이걸로 사용함
+    @GET("update-car-info")
+    fun UpdateCarData(@QueryMap map: Map<String, String>): retrofit2.Call<String>
 
 }

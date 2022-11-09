@@ -208,13 +208,6 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
                                 if (!it.isSuccessful) return@let
                                 if (it.body() == null) return@let
 
-                                showLog("DATA-> "+binding.etCarNum.text.toString())
-                                showLog("DATA-> "+binding.etMdn.text.toString())
-                                showLog("DATA-> "+binding.etCompanyName.text.toString())
-                                showLog("DATA-> "+it)
-                                showLog("DATA-> "+it1)
-//                            showLog(it.body()?.carInfoVO?.get(0)?.company_name.toString())
-
                                 //me: 리스트 사이즈만큼 세팅해야함?
                                 //리사이클러뷰 대이터 표출하기 전에 한번 초기화
                                 carinfoList.clear()
@@ -225,8 +218,7 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
 
                                 //데이터 리스트 -> 리사이클러뷰에 표출
                                 carinfoList.addAll(it.body()?.carInfoVO as MutableList<CarInfoVOS>)  //carInfoItem 해도됨
-                                showLog("DATA_SIZE-> "+carinfoList.size)  //건수
-                                showLog("DATA_RESULT-> "+carinfoList.toString())
+//                                showLog("DATA_RESULT-> "+carinfoList.toString())
 
                                 binding.carinfoRecyclerview.adapter = carInfoAdapter   //lateinit property carInfoAdapter has not been initialized
                                 binding.carinfoRecyclerview.layoutManager =
@@ -289,7 +281,7 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
         return sdf.format(time.time)
     }
 
-    private fun showAlertDialog(title: String, type: String) {
+    fun showAlertDialog(title: String, type: String) {
         when(type) {
             "cancel" -> {  //등록 또는 수정 취소
                 val dialog: AlertDialog.Builder = AlertDialog.Builder(mContext)

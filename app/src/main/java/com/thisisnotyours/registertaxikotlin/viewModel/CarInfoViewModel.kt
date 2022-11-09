@@ -11,6 +11,7 @@ import com.thisisnotyours.registertaxikotlin.model.CarInfoSpinnerResponse
 import com.thisisnotyours.registertaxikotlin.model.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.Call
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -66,6 +67,21 @@ class CarInfoViewModel @Inject constructor(
     suspend fun getCarInfoFirmwareList(): Response<CarInfoSpinnerResponse> {
         return carInfoRepository.carInfoFirmwareListData()
     }
+
+//    suspend fun updateCarInfoData(map: HashMap<String, String>): Call<String> {
+//        return carInfoRepository.updateCarInfoData(map)
+//    }
+//    suspend fun updateCarInfoData(map: HashMap<String, String>): Call<String> {
+//        return carInfoRepository.updateCarInfoData(map)
+//    }
+
+    suspend fun updateCarData(map: HashMap<String, String>): Response<String> {
+        return carInfoRepository.updateCarData(map)
+    }
+
+//    suspend fun registerCarInfoData(map: HashMap<String, String>) {
+//        return carInfoRepository.registerCarInfoData(map)
+//    }
 
 
 

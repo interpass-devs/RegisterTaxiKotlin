@@ -43,4 +43,15 @@ class CarInfoRepository @Inject constructor(private val carInfoApiService: CarIn
             carInfoApiService.GetFirmwareIdSuspend()
         }
 
+//    suspend fun updateCarInfoData(map: HashMap<String, String>) =
+//        withContext(Dispatchers.Main) {
+//            carInfoApiService.UpdateCarInfo(map)
+//        }
+
+    suspend fun updateCarData(mapDatas: HashMap<String, String>) =
+        withContext(Dispatchers.Main) {
+            carInfoApiService.UpdateCarInfo(mapDatas)
+        }
+
+
 }

@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.thisisnotyours.registertaxikotlin.R
 import com.thisisnotyours.registertaxikotlin.data.CarInfoApiService
 import com.thisisnotyours.registertaxikotlin.databinding.ActivityMainBinding
@@ -21,12 +23,15 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import timber.log.Timber
 
+val gson = GsonBuilder().setLenient().create()
 
 val retrofit = Retrofit.Builder()
     .baseUrl("http://49.50.174.192:8080/")
-    .addConverterFactory(GsonConverterFactory.create())
+//    .addConverterFactory(GsonConverterFactory.create(gson))
+    .addConverterFactory(ScalarsConverterFactory.create())
     .build()
 
 object openApiObject {

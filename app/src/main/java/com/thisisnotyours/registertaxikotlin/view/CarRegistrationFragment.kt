@@ -9,16 +9,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.thisisnotyours.registertaxikotlin.R
+import com.thisisnotyours.registertaxikotlin.data.CarInfoApiService
 import com.thisisnotyours.registertaxikotlin.databinding.FragmentCarRegistrationBinding
 import com.thisisnotyours.registertaxikotlin.model.CarInfoSpinnerResponse
 import com.thisisnotyours.registertaxikotlin.model.SpinnerVOS
 import com.thisisnotyours.registertaxikotlin.viewModel.CarInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Response
+import javax.security.auth.callback.Callback
 
 @AndroidEntryPoint
 class CarRegistrationFragment : Fragment(), View.OnClickListener {
@@ -70,6 +77,8 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         binding.btnCarTypePersonal.setOnClickListener(this)
         binding.btnCarTypeCompany.setOnClickListener(this)
         binding.tvViewMoreDriverId.setOnClickListener(this)
+        binding.btnRegister.setOnClickListener(this)
+        binding.btnRegisterCancel.setOnClickListener(this)
 
         fragmentType = "register"
 
@@ -108,19 +117,19 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             cityId = requireArguments().getString("city_id").toString()
             firmwareId = requireArguments().getString("firmware_id").toString()
             speedFactor = requireArguments().getString("speed_factor").toString()
-            Log.d(log+"companyName", companyName)
-            Log.d(log+"carRegnum", carRegnum)
-            Log.d(log+"mdn", mdn)
-            Log.d(log+"car_type", carType)
-            Log.d(log+"car_vin", carVin)
-            Log.d(log+"car_num", carNum)
-            Log.d(log+"driver_id1", driverId1)
-            Log.d(log+"driver_id2", driverId2)
-            Log.d(log+"driver_id3", driverId3)
-            Log.d(log+"fare_id", fareId)
-            Log.d(log+"city_id", cityId)
-            Log.d(log+"firmware_id", firmwareId)
-            Log.d(log+"speed_factor", speedFactor)
+//            Log.d(log+"companyName", companyName)
+//            Log.d(log+"carRegnum", carRegnum)
+//            Log.d(log+"mdn", mdn)
+//            Log.d(log+"car_type", carType)
+//            Log.d(log+"car_vin", carVin)
+//            Log.d(log+"car_num", carNum)
+//            Log.d(log+"driver_id1", driverId1)
+//            Log.d(log+"driver_id2", driverId2)
+//            Log.d(log+"driver_id3", driverId3)
+//            Log.d(log+"fare_id", fareId)
+//            Log.d(log+"city_id", cityId)
+//            Log.d(log+"firmware_id", firmwareId)
+//            Log.d(log+"speed_factor", speedFactor)
 
             //view 에 값 세팅
             binding.etCompanyName.setText(companyName)
@@ -138,14 +147,15 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             binding.btnRegister.text = carPageType+" 완료"
         }
 
-//        getParams()
-        //요금스피너
-        getFareIdSpinnerList(mContext)
-        getCityIdSpinnerList(mContext)
-        getFirmwareIdSpinnerList(mContext)
+        //스피너
+        getFareIdSpinnerList(mContext)  //요금
+        getCityIdSpinnerList(mContext)  //시경계
+        getFirmwareIdSpinnerList(mContext) //벤사
 
         return binding.root
-    }
+
+    }//onCreateView..
+
 
     override fun onClick(p0: View?) {
         when(p0?.id) {
@@ -163,7 +173,7 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                 binding.btnCarTypePersonal.setTextColor(resources.getColor(R.color.black))
                 carType = "21"
             }
-            R.id.tv_view_more_driver_id -> {
+            R.id.tv_view_more_driver_id -> { //[더보기]버튼
                 when(viewMoreClicked) {
                     true -> {
                         binding.tvViewMoreDriverId.text = "닫기"
@@ -181,9 +191,12 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                     }
                 }
             }
+            R.id.btn_register -> {getParams()}  //[등록]/[수정]완료버튼
+            R.id.btn_register_cancel -> { //등록취소버튼
+
+            }
         }
     }
-
 
     fun checkDriverId(driverId: String?, num: Int?) {
         if (driverId != null) {
@@ -318,10 +331,7 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                     for (i in 0 until firmwareIdResult!!.spinnerVOS?.size!!) {
                         //수정값있는지 확인 및 적용
                         if (!firmwareId.equals("")) {
-                            Log.d(log+"firmware_id", firmwareId)
                             if (firmwareId.equals(firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_id)) {
-                                Log.d(log+"firmware_id_check", firmwareId+" == "+firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_id)
-                                Log.d(log+"firmware_name",firmwareIdResult!!.spinnerVOS?.get(i)?.firmware_name.toString())
                                 firmwareIdIndex = i
                             }
                         }
@@ -358,11 +368,10 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         }
     }
 
-
-
+    //map 데이터
     private fun getParams() {
         keyMap.put("reg_id", "test")
-        keyMap.put("update_id", "test")
+//        keyMap.put("update_id", "test")
         keyMap.put("company_name", binding.etCompanyName.text.toString())
         keyMap.put("car_regnum", binding.etCarRegnum.text.toString())
         keyMap.put("mdn", binding.etMdn.text.toString())
@@ -373,13 +382,13 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
 
         if (binding.etDriverId2.text.toString().equals("")) {
             keyMap.put("driver_id2", "222222222")
-        }else{
+        } else {
             keyMap.put("driver_id2", binding.etDriverId2.text.toString())
         }
 
         if (binding.etDriverId3.text.toString().equals("")) {
             keyMap.put("driver_id3", "333333333")
-        }else{
+        } else {
             keyMap.put("driver_id3", binding.etDriverId3.text.toString())
         }
 
@@ -389,9 +398,86 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         keyMap.put("firmware_id", firmwareId)
         keyMap.put("speed_factor", binding.etSpeedFactor.text.toString())
 
-        Log.d("final_key_maps", keyMap.toString())
+        Log.d("key_maps", keyMap.toString())
+        Log.d("key_maps_size", keyMap.size.toString()+"개")
+
+        insertData(keyMap)
     }
 
 
+    //하나의 데이터가 있어도 true 로 나옴
+    private fun mapNullCheck(map: HashMap<String, String>): Boolean {
+        return (map == null || map.isEmpty())
+    }
+
+    private fun mapValueCheck(map: HashMap<String, String>, keyValue: String) {
+        for (i in 0 until map.size) {
+            if (map.get(keyValue).equals("")) {
+                Log.d("key_maps_size", map.size.toString())
+                Log.d("key_maps_empty", keyValue)
+            }
+        }
+    }
+
+    private fun insertData(datas: HashMap<String, String>) {
+        val call = openApiObject.retrofitService.InsertCarData(datas)
+        call.enqueue(object : retrofit2.Callback<String>{
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    Log.d("insert_response", response.body().toString())  //insert_response: reg_id,00
+                    //check empty key & value
+                    if (response.body().toString().equals("Y")) {  //등록완료
+                        Log.d("insert_response_Y", response.body().toString())
+                    }else if (response.body().toString().equals("N")) {
+                        Log.d("insert_response_N", response.body().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("update_response_fail", t.message.toString())
+            }
+
+        })
+    }
+
+    //수정데이터 update
+    private fun updateData(datas: HashMap<String, String>) {
+        val call = openApiObject.retrofitService.UpdateCarData(datas)
+        call.enqueue(object : retrofit2.Callback<String>{
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    if (response.body().toString().equals("Y")) {  //수정완료
+                        Log.d("update_response", response.body().toString())
+                    }else if (response.body().toString().equals("N")) {
+                        Log.d("update_response", response.body().toString())
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.d("update_response_fail", t.message.toString())
+            }
+
+        })
+    }
+
+    fun updateCarInfoData(datas: HashMap<String, String>) {
+        lifecycleScope.launch {
+            carInfoViewModel.updateCarData(datas)
+                .let {
+                    if (!it.isSuccessful) return@let
+                    if (it.body() == null) return@let
+
+                    if (it.isSuccessful) {
+                        Log.d(log+"updateData", it.body().toString())
+                    }
+                }
+        }
+    }
+
+    fun showToast(msg: String) {
+        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show()
+    }
 
 }
