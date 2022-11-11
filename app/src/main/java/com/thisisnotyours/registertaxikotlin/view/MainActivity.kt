@@ -17,6 +17,7 @@ import com.thisisnotyours.registertaxikotlin.R
 import com.thisisnotyours.registertaxikotlin.data.CarInfoApiService
 import com.thisisnotyours.registertaxikotlin.databinding.ActivityMainBinding
 import com.thisisnotyours.registertaxikotlin.model.CarInfoResponse
+import com.thisisnotyours.registertaxikotlin.storage.PreferenceManager
 import com.thisisnotyours.registertaxikotlin.viewModel.CarInfoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.Call
@@ -56,29 +57,38 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         mContext = this
 
+        getSavedInformation(mContext)
+
         setSupportActionBar(binding.mainToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         binding.searchCar.setOnClickListener(this)
         binding.registerCar.setOnClickListener(this)
+        binding.tvLogout.setOnClickListener(this)
 
         binding.searchCar.performClick()
 
     }//onCreate..
 
+    private fun getSavedInformation(context: Context) {
+        if (!PreferenceManager.getString(context, "reg_name").equals("") || PreferenceManager.getString(mContext, "reg_name") != null) {
+            binding.tvRegName.text = PreferenceManager.getString(mContext, "reg_name")
+        }
+    }
+
 
     //툴바에 레이아웃삽입
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar_menu_item, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item?.itemId) {
-            R.id.logout -> {showAlertDialog()}
-        }
-        return super.onOptionsItemSelected(item)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.toolbar_menu_item, menu)
+//        return true
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when(item?.itemId) {
+//            R.id.logout -> {showAlertDialog()}
+//        }
+//        return super.onOptionsItemSelected(item)
+//    }
 
 
     //클릭리스너
@@ -86,6 +96,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         when(p0?.id) {
             R.id.search_car -> changeFragment(0)
             R.id.register_car -> changeFragment(1)
+            R.id.tv_logout -> {showAlertDialog()}
         }
     }
 

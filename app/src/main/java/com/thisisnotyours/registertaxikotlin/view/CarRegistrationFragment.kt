@@ -381,12 +381,12 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         binding.spinnerFirmwareUpdate.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
                 var selectedItem = firmwareUpdateList.get(pos)
-                Log.d("selected_firm_update", selectedItem)
+                Log.d("select_firm_update", selectedItem)
                 for (i in 0 until firmwareUpdateList.size) {
                     if (selectedItem.equals(firmwareUpdateList.get(i))) {
-                        Log.d("selected_firm_update==", i.toString())
-                        Log.d("selected_firm_update==", selectedItem+" == "+firmwareUpdateList.get(i))
-                        Log.d("selected_firm_update==","-------------------------------")
+                        Log.d("select_firm_update==", i.toString())
+                        Log.d("select_firm_update==", selectedItem+" == "+firmwareUpdateList.get(i))
+                        Log.d("select_firm_update==","-------------------------------")
                         firmwareUpdate_idx = i
                         firmwareUpdate = firmwareUpdateList.get(i)
                     }
@@ -412,8 +412,8 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                 var selectedItem = daemonUpdateList.get(pos)
                 for (t in 0 until daemonUpdateList.size) {
                     if (selectedItem.equals(daemonUpdateList.get(t))) {
-                        Log.d("selected_daemon_update==", t.toString())
-                        Log.d("selected_daemon_update==", selectedItem+" == "+firmwareUpdateList.get(t))
+                        Log.d("select_daemon_update==", t.toString())
+                        Log.d("select_daemon_update==", selectedItem+" == "+firmwareUpdateList.get(t))
                         daemonUpdate_idx = t
                         daemonUpdate = daemonUpdateList.get(t)
                     }
