@@ -47,9 +47,13 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
     private var cityId: String = ""
     private var firmwareId: String = ""
     private var speedFactor: String = ""
+    private var firmwareUpdate: String = ""
+    private var daemonUpdate: String = ""
     private var fareIdIndex: Int = 0
     private var cityIdIndex: Int = 0
     private var firmwareIdIndex: Int = 0
+    private var daemonUpdate_idx = 0
+    private var firmwareUpdate_idx = 0
     private var fareIdList = arrayListOf<String>()
     private var fareIdAdapter: ArrayAdapter<*>? = null  // <*> : star-projections 타입 (README 파일 참조)
     private var fareIdResult: CarInfoSpinnerResponse? = null
@@ -59,6 +63,10 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
     private var firmwareIdList = arrayListOf<String>()
     private var firmwareIdAdapter: ArrayAdapter<*>? = null
     private var firmwareIdResult: CarInfoSpinnerResponse? = null
+    private var firmwareUpdateList = arrayListOf<String>()
+    private var firmwareUpdateAdapter: ArrayAdapter<String>? = null
+    private var daemonUpdateList = arrayListOf<String>()
+    private var daemonUpdateAdapter: ArrayAdapter<String>? = null
     private var viewMoreClicked: Boolean = true
     private val keyMap = HashMap<String, String>()
     private lateinit var carInfoViewModel: CarInfoViewModel
@@ -87,6 +95,7 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         updateId = "test"
 
         if (arguments != null) {
+            binding.updateLayout.visibility = View.VISIBLE
             carPageType = "수정"
             binding.btnRegister.text = carPageType+" 완료"
             companyName = requireArguments().getString("company_name").toString()
@@ -117,6 +126,8 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             cityId = requireArguments().getString("city_id").toString()
             firmwareId = requireArguments().getString("firmware_id").toString()
             speedFactor = requireArguments().getString("speed_factor").toString()
+            firmwareUpdate = requireArguments().getString("firmware_update").toString()
+            daemonUpdate = requireArguments().getString("daemon_update").toString()
 
             //view 에 값 세팅
             binding.etCompanyName.setText(companyName)
@@ -128,8 +139,11 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             binding.etDriverId3.setText(driverId3)
             binding.etCarRegnum.setText(carRegnum)
             binding.etSpeedFactor.setText(speedFactor)
+            if (firmwareUpdate.equals("Y")) { firmwareUpdate_idx = 0 }else if (firmwareUpdate.equals("N")) { firmwareUpdate_idx = 1 }
+            if (daemonUpdate.equals("Y")) { daemonUpdate_idx = 0 }else if (daemonUpdate.equals("N")) { daemonUpdate_idx = 1 }
 
         }else{
+            binding.updateLayout.visibility = View.GONE
             carPageType = "등록"
             binding.btnRegister.text = carPageType+" 완료"
         }
@@ -138,6 +152,7 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         getFareIdSpinnerList(mContext)  //요금
         getCityIdSpinnerList(mContext)  //시경계
         getFirmwareIdSpinnerList(mContext) //벤사
+        UpdateSetting(mContext)  //펌웨어 & 대몬 업데이트기능.
 
         return binding.root
 
@@ -351,6 +366,70 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             }
         }
     }
+
+    private fun UpdateSetting(context: Context) {
+        //펌웨어 업데이트 여부
+        firmwareUpdateList.add("Y")
+        firmwareUpdateList.add("N")
+        firmwareUpdateAdapter = ArrayAdapter(
+            context,
+            androidx.appcompat.R.layout.select_dialog_item_material,
+            firmwareUpdateList as List<String>
+        )
+
+        binding.spinnerFirmwareUpdate.adapter = firmwareUpdateAdapter
+        binding.spinnerFirmwareUpdate.setSelection(firmwareUpdate_idx)
+        binding.spinnerFirmwareUpdate.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                var selectedItem = firmwareUpdateList.get(pos)
+                Log.d("selected_firm_update", selectedItem)
+                for (i in 0 until firmwareUpdateList.size) {
+                    if (selectedItem.equals(firmwareUpdateList.get(i))) {
+                        Log.d("selected_firm_update==", selectedItem+" == "+firmwareUpdateList.get(i))
+                        firmwareUpdate_idx = i
+                        firmwareUpdate = firmwareUpdateList.get(i)
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+        }
+        //대몬 업데이트 여부
+        daemonUpdateList.add("Y")
+        daemonUpdateList.add("N")
+        daemonUpdateAdapter = ArrayAdapter(
+            context,
+            androidx.appcompat.R.layout.select_dialog_item_material,
+            daemonUpdateList as List<String>
+        )
+        binding.spinnerDaemonUpdate.adapter = daemonUpdateAdapter
+        binding.spinnerDaemonUpdate.setSelection(daemonUpdate_idx)
+        binding.spinnerDaemonUpdate.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                var selectedItem = daemonUpdateList.get(pos)
+                for (t in 0 until daemonUpdateList.size) {
+                    if (selectedItem.equals(daemonUpdateList.get(t))) {
+                        Log.d("selected_daemon_update==", selectedItem+" == "+firmwareUpdateList.get(t))
+                        daemonUpdate_idx = t
+                        daemonUpdate = daemonUpdateList.get(t)
+                    }
+                }
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+        }
+
+    }
+
+
+
+
 
     //map 데이터
     private fun getParams() {

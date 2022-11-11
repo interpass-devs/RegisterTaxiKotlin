@@ -29,6 +29,8 @@ data class CarInfoVOS (
     @SerializedName("city_name") var city_name: String? = null,
     @SerializedName("firmware_id") var firmware_id: String? = null,
     @SerializedName("firmware_name") var firmware_name: String? = null,
+    @SerializedName("firmware_update") var firmware_update: String? = null,
+    @SerializedName("daemon_update") var daemon_update: String? = null,
     @SerializedName("speed_factor") var speed_factor: String? = null,
     @SerializedName("store_id") var store_id: String? = null,
     @SerializedName("unit_num") var unit_num: String? = null,

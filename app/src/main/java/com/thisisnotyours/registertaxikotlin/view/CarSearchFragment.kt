@@ -169,7 +169,6 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
             override fun onFailure(call: Call<String>, t: Throwable) {
                 showLog("onResponse_str: "+t.message.toString())
             }
-
         })
     }
 
@@ -249,6 +248,8 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
                                         b.putString("city_id", it.body()?.carInfoVO?.get(pos)?.city_id.toString())
                                         b.putString("firmware_id", it.body()?.carInfoVO?.get(pos)?.firmware_id.toString())
                                         b.putString("speed_factor", it.body()?.carInfoVO?.get(pos)?.speed_factor.toString())
+                                        b.putString("firmware_update", it.body()?.carInfoVO?.get(pos)?.firmware_update.toString())
+                                        b.putString("daemon_update", it.body()?.carInfoVO?.get(pos)?.daemon_update.toString())
                                         val frag = CarRegistrationFragment()
                                         frag.arguments = b
                                         activity?.supportFragmentManager
