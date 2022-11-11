@@ -376,7 +376,6 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             androidx.appcompat.R.layout.select_dialog_item_material,
             firmwareUpdateList as List<String>
         )
-
         binding.spinnerFirmwareUpdate.adapter = firmwareUpdateAdapter
         binding.spinnerFirmwareUpdate.setSelection(firmwareUpdate_idx)
         binding.spinnerFirmwareUpdate.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -385,7 +384,9 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                 Log.d("selected_firm_update", selectedItem)
                 for (i in 0 until firmwareUpdateList.size) {
                     if (selectedItem.equals(firmwareUpdateList.get(i))) {
+                        Log.d("selected_firm_update==", i.toString())
                         Log.d("selected_firm_update==", selectedItem+" == "+firmwareUpdateList.get(i))
+                        Log.d("selected_firm_update==","-------------------------------")
                         firmwareUpdate_idx = i
                         firmwareUpdate = firmwareUpdateList.get(i)
                     }
@@ -395,7 +396,6 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
-
         }
         //대몬 업데이트 여부
         daemonUpdateList.add("Y")
@@ -412,6 +412,7 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                 var selectedItem = daemonUpdateList.get(pos)
                 for (t in 0 until daemonUpdateList.size) {
                     if (selectedItem.equals(daemonUpdateList.get(t))) {
+                        Log.d("selected_daemon_update==", t.toString())
                         Log.d("selected_daemon_update==", selectedItem+" == "+firmwareUpdateList.get(t))
                         daemonUpdate_idx = t
                         daemonUpdate = daemonUpdateList.get(t)
@@ -422,16 +423,12 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
-
         }
-
     }
 
 
 
-
-
-    //map 데이터
+    //map 데이터 -> send to DB
     private fun getParams() {
         when(carPageType) {
             "등록" -> {keyMap.put("reg_id","test")}
@@ -462,6 +459,8 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
         keyMap.put("daemon_id", "1")
         keyMap.put("firmware_id", firmwareId)
         keyMap.put("speed_factor", binding.etSpeedFactor.text.toString())
+        keyMap.put("firmware_update", firmwareUpdate)
+        keyMap.put("daemon_update", daemonUpdate)
 
         Log.d("key_maps", keyMap.toString())
         Log.d("key_maps_size", keyMap.size.toString()+"개")
@@ -606,6 +605,11 @@ class CarRegistrationFragment : Fragment(), View.OnClickListener {
                 "firmware_id,00" -> {
                     what = "벤사를"
                     msg = " 선택해주세요"
+                }
+                "firmware_update,00" -> {
+
+                }
+                "daemon_udpate,00" -> {
                 }
             }
             showToast(what+msg)
