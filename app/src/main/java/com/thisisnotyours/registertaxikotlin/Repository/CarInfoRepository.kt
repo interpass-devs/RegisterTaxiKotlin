@@ -10,19 +10,17 @@ class CarInfoRepository @Inject constructor(private val carInfoApiService: CarIn
     suspend fun carInfoListData(car_num: String
                                 , mdn: String
                                 , company_name: String
-                                , st_dtti: String
-                                , et_dtti: String
                                 , offset: String
-                                , limit: String) =
+                                , limit: String
+                                , reg_id: String) =
         withContext(Dispatchers.Default) {
             carInfoApiService.GetCarInfoSuspend(
                 car_num,
                 mdn,
                 company_name,
-                st_dtti,
-                et_dtti,
                 offset,
-                limit
+                limit,
+                reg_id
             )
         }
 

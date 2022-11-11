@@ -112,6 +112,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     .beginTransaction()
                     .add(R.id.frame_change, searchFrag)
                     .commit()
+                binding.searchCar.setBackgroundResource(R.drawable.btn_gradi_white_line)
+                binding.searchCar.setTextColor(resources.getColor(R.color.blue))
+                binding.registerCar.setBackgroundResource(R.drawable.btn_gradi_white)
+                binding.registerCar.setTextColor(resources.getColor(R.color.light_grey))
             }
             1 -> { //차량등록/수정 화면
                 val bundle = Bundle()
@@ -121,6 +125,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     .beginTransaction()
                     .add(R.id.frame_change, registerFrag)
                     .commit()
+                binding.searchCar.setBackgroundResource(R.drawable.btn_gradi_white)
+                binding.searchCar.setTextColor(resources.getColor(R.color.light_grey))
+                binding.registerCar.setBackgroundResource(R.drawable.btn_gradi_white_line)
+                binding.registerCar.setTextColor(resources.getColor(R.color.blue))
             }
         }
     }

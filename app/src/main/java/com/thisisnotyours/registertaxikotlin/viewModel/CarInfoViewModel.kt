@@ -32,7 +32,7 @@ class CarInfoViewModel @Inject constructor(
 
     private fun loadData() {
         viewModelScope.launch {
-            val data = carInfoRepository.carInfoListData("","","","20221026104924","20221027104924","0","5")
+            val data = carInfoRepository.carInfoListData("","","","0","5", "test")
             when(data.isSuccessful) {
                 true -> {
                     mLiveData.postValue(data.body().toString())
@@ -47,12 +47,11 @@ class CarInfoViewModel @Inject constructor(
         car_num: String,
         mdn: String,
         company_name: String,
-        st_dtti: String,
-        et_dtti: String,
         offset: String,
-        limit: String
+        limit: String,
+        reg_id: String
     ): Response<CarInfoResponse> {
-        return carInfoRepository.carInfoListData(car_num, mdn, company_name, st_dtti, et_dtti, offset, limit)
+        return carInfoRepository.carInfoListData(car_num, mdn, company_name, offset, limit, reg_id)
     }
 
 

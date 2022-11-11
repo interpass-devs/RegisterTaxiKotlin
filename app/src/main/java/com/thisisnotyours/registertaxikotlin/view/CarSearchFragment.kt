@@ -142,7 +142,8 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
     private fun carInfoListCnt() {
         val call = openApiObject.retrofitService.GetCarInfoCnt(binding.etCarNum.text.toString()
                                                                 ,binding.etMdn.text.toString()
-                                                                ,binding.etCompanyName.text.toString())
+                                                                ,binding.etCompanyName.text.toString()
+                                                                , "test")
         call.enqueue(object : retrofit2.Callback<String>{
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (!response.body().toString().equals("") || response.body().toString() != null) {
@@ -195,76 +196,71 @@ class CarSearchFragment : Fragment(), View.OnClickListener {
             showToast("마지막 페이지입니다")
         }else{
             lifecycleScope.launch {
-                getYesterdayString()?.let {
-                    getCurrentDayString()?.let { it1 ->
-                        carInfoViewModel.getCarInfoList(binding.etCarNum.text.toString()
-                            ,binding.etMdn.text.toString()
-                            ,binding.etCompanyName.text.toString()
-                            ,it   //yesterday
-                            ,it1  //today
-                            ,offset.toString()
-                            ,limit.toString())
-                            .let {
-                                if (!it.isSuccessful) return@let
-                                if (it.body() == null) return@let
+                carInfoViewModel.getCarInfoList(binding.etCarNum.text.toString()
+                    ,binding.etMdn.text.toString()
+                    ,binding.etCompanyName.text.toString()
+                    ,offset.toString()
+                    ,limit.toString()
+                    ,"test")
+                    .let {
+                        if (!it.isSuccessful) return@let
+                        if (it.body() == null) return@let
 
-                                //me: 리스트 사이즈만큼 세팅해야함?
-                                //리사이클러뷰 대이터 표출하기 전에 한번 초기화
-                                carinfoList.clear()
+                        //me: 리스트 사이즈만큼 세팅해야함?
+                        //리사이클러뷰 대이터 표출하기 전에 한번 초기화
+                        carinfoList.clear()
 
-                                binding.btnEmpty.visibility = View.VISIBLE
-                                binding.btnBack.visibility = View.VISIBLE
-                                binding.btnNext.visibility = View.VISIBLE
+                        binding.btnEmpty.visibility = View.VISIBLE
+                        binding.btnBack.visibility = View.VISIBLE
+                        binding.btnNext.visibility = View.VISIBLE
 
-                                //데이터 리스트 -> 리사이클러뷰에 표출
-                                carinfoList.addAll(it.body()?.carInfoVO as MutableList<CarInfoVOS>)  //carInfoItem 해도됨
+                        //데이터 리스트 -> 리사이클러뷰에 표출
+                        carinfoList.addAll(it.body()?.carInfoVO as MutableList<CarInfoVOS>)  //carInfoItem 해도됨
 //                                showLog("DATA_RESULT-> "+carinfoList.toString())
 
-                                binding.carinfoRecyclerview.adapter = carInfoAdapter   //lateinit property carInfoAdapter has not been initialized
-                                binding.carinfoRecyclerview.layoutManager =
-                                    LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                        binding.carinfoRecyclerview.adapter = carInfoAdapter   //lateinit property carInfoAdapter has not been initialized
+                        binding.carinfoRecyclerview.layoutManager =
+                            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
-                                binding.carinfoRecyclerview.post{
-                                    carInfoAdapter.notifyDataSetChanged()
-                                }
+                        binding.carinfoRecyclerview.post{
+                            carInfoAdapter.notifyDataSetChanged()
+                        }
 
-                                carInfoAdapter.setMyLongClickListener(object :
-                                    CarInfoAdapter.mItemLongClickListener {
-                                    override fun onItemLongClick(v: View?, pos: Int) {
+                        carInfoAdapter.setMyLongClickListener(object :
+                            CarInfoAdapter.mItemLongClickListener {
+                            override fun onItemLongClick(v: View?, pos: Int) {
 //                                        showAlertDialog("수정","transfer")
-                                        val dialog: AlertDialog.Builder = AlertDialog.Builder(mContext)
-                                        dialog.setTitle("수정을 하려면 확인버튼을 눌러주세요")
-                                            .setNegativeButton("취소", DialogInterface.OnClickListener { paramDialogInterface, paramInt -> })
-                                            .setPositiveButton("확인", DialogInterface.OnClickListener { paramDialogInterface, paramInt ->
-                                                //프래그먼트 이동 및 값전달
-                                                val b = Bundle()
-                                                b.putString("company_name", it.body()?.carInfoVO?.get(pos)?.company_name.toString())
-                                                b.putString("car_regnum", it.body()?.carInfoVO?.get(pos)?.car_regnum.toString())
-                                                b.putString("mdn", it.body()?.carInfoVO?.get(pos)?.mdn.toString())
-                                                b.putString("car_type", it.body()?.carInfoVO?.get(pos)?.type_name.toString())
-                                                b.putString("car_vin", it.body()?.carInfoVO?.get(pos)?.car_vin.toString())
-                                                b.putString("car_num", it.body()?.carInfoVO?.get(pos)?.car_num.toString())
-                                                b.putString("driver_id1", it.body()?.carInfoVO?.get(pos)?.driver_id1.toString())
-                                                b.putString("driver_id2", it.body()?.carInfoVO?.get(pos)?.driver_id2.toString())
-                                                b.putString("driver_id3", it.body()?.carInfoVO?.get(pos)?.driver_id3.toString())
-                                                b.putString("fare_id", it.body()?.carInfoVO?.get(pos)?.fare_id.toString())
-                                                b.putString("city_id", it.body()?.carInfoVO?.get(pos)?.city_id.toString())
-                                                b.putString("firmware_id", it.body()?.carInfoVO?.get(pos)?.firmware_id.toString())
-                                                b.putString("speed_factor", it.body()?.carInfoVO?.get(pos)?.speed_factor.toString())
-                                                val frag = CarRegistrationFragment()
-                                                frag.arguments = b
-                                                activity?.supportFragmentManager
-                                                    ?.beginTransaction()
-                                                    ?.add(R.id.frame_change, frag)
-                                                    ?.commit()
-                                            })
-                                        dialog.show()
-                                    }
-                                })
-
+                                val dialog: AlertDialog.Builder = AlertDialog.Builder(mContext)
+                                dialog.setTitle("수정을 하려면 확인버튼을 눌러주세요")
+                                    .setNegativeButton("취소", DialogInterface.OnClickListener { paramDialogInterface, paramInt -> })
+                                    .setPositiveButton("확인", DialogInterface.OnClickListener { paramDialogInterface, paramInt ->
+                                        //프래그먼트 이동 및 값전달
+                                        val b = Bundle()
+                                        b.putString("company_name", it.body()?.carInfoVO?.get(pos)?.company_name.toString())
+                                        b.putString("car_regnum", it.body()?.carInfoVO?.get(pos)?.car_regnum.toString())
+                                        b.putString("mdn", it.body()?.carInfoVO?.get(pos)?.mdn.toString())
+                                        b.putString("car_type", it.body()?.carInfoVO?.get(pos)?.type_name.toString())
+                                        b.putString("car_vin", it.body()?.carInfoVO?.get(pos)?.car_vin.toString())
+                                        b.putString("car_num", it.body()?.carInfoVO?.get(pos)?.car_num.toString())
+                                        b.putString("driver_id1", it.body()?.carInfoVO?.get(pos)?.driver_id1.toString())
+                                        b.putString("driver_id2", it.body()?.carInfoVO?.get(pos)?.driver_id2.toString())
+                                        b.putString("driver_id3", it.body()?.carInfoVO?.get(pos)?.driver_id3.toString())
+                                        b.putString("fare_id", it.body()?.carInfoVO?.get(pos)?.fare_id.toString())
+                                        b.putString("city_id", it.body()?.carInfoVO?.get(pos)?.city_id.toString())
+                                        b.putString("firmware_id", it.body()?.carInfoVO?.get(pos)?.firmware_id.toString())
+                                        b.putString("speed_factor", it.body()?.carInfoVO?.get(pos)?.speed_factor.toString())
+                                        val frag = CarRegistrationFragment()
+                                        frag.arguments = b
+                                        activity?.supportFragmentManager
+                                            ?.beginTransaction()
+                                            ?.add(R.id.frame_change, frag)
+                                            ?.commit()
+                                    })
+                                dialog.show()
                             }
+                        })
+
                     }
-                }
             }
         }
     }
